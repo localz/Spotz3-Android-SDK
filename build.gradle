@@ -9,6 +9,7 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenLocal()
         maven { url "http://localz.github.io/mvn-repo" }
         mavenCentral()
     }
