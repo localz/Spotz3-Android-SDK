@@ -69,8 +69,6 @@ public class MainActivity extends Activity {
                 new InitializationListenerAdapter() {
                     @Override
                     public void onInitialized() {
-                        // Start scanning for spotz now that we're initialized
-                        Spotz.getInstance().startScanningForSpotz(MainActivity.this, Spotz.ScanMode.EAGER);
 
                         TextView rangeText = (TextView) findViewById(R.id.activity_range_text);
 
@@ -83,7 +81,7 @@ public class MainActivity extends Activity {
 
                     @Override
                     public void onError(Exception exception) {
-                        Log.e(TAG, "Exception while registering device ");
+                        Log.e(TAG, "Exception while registering device", exception);
 
                         runOnUiThread(new Runnable() {
                             @Override
