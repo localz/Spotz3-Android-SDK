@@ -34,7 +34,7 @@ The sample app requires devices running Android 4.3 or newer.
     
     If you're using **Android Studio**, simply 'Open' the project.
 
-    If you're using **Eclipse ADT**, in your workspace do File -> Import -> General -> Existing Projects into Workspace.
+    If you're using **Eclipse ADT**, in your workspace do File -> Import -> General -> Existing Projects into Workspace first for google-play-services-lib library project and then for the main project.
     
     *The project targets Android 4.4 (API level 19) so check you have this version in your Android SDK.*
     
