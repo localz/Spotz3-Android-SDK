@@ -169,7 +169,7 @@ public class MainActivity extends Activity {
                {
                  "date": "2015-01-07T20:34:00.594Z",
                  "548662128f658a08006d684d": {
-                 "anyWebCall": {
+                 "httpGetWebhook": {
                         "base": "USD",
                         "date": "2015-01-07",
                         "rates": {
@@ -181,8 +181,8 @@ public class MainActivity extends Activity {
 
                where data - is the timestamp when actual response occurred
                548662128f658a08006d684d - is spot id
-               anyWebCall - is the name of the integration, as shown in the Spotz Web Dashboard.
-               The value of "anyWebCall" is the JSON string of the response from the integration.
+               httpGetWebhook - is the name of the integration, as shown in the Spotz Web Dashboard.
+               The value of "httpGetWebhook" is the JSON string of the response from the integration.
                extractInfoFromIntegrationResponse - is method specific to parsing response from the
                3rd party API.
              */
@@ -232,17 +232,21 @@ public class MainActivity extends Activity {
         String returnMessage = "Data not received or corrupted";
 
         try {
-            // ANY GET WEBCALL
-            String anywebcallResponseString = integrationResponseObject
-                    .getString("anyWebCall");
-            JSONObject anywebcallResponseObject = new JSONObject(
-                    anywebcallResponseString);
-            JSONObject ratesDictionary = anywebcallResponseObject
+            // HTTP GET WEBHOOK
+            String httpGetWebhookResponseString = integrationResponseObject
+                    .getString("httpGetWebhook");
+            Log.d(TAG, "httpGetWebhookResponseString: " + httpGetWebhookResponseString);
+            JSONObject httpGetWebhookResponseObject = new JSONObject(
+                    httpGetWebhookResponseString);
+            JSONObject ratesDictionary = httpGetWebhookResponseObject
                     .getJSONObject("rates");
-            baseCurrency = (String) anywebcallResponseObject
+            Log.d(TAG, "ratesDictionary: " + ratesDictionary);
+            baseCurrency = (String) httpGetWebhookResponseObject
                     .get("base");
+            Log.d(TAG, "baseCurrency: " + baseCurrency);
             Double ratesEURValue = (Double) ratesDictionary
                     .get("EUR");
+            Log.d(TAG, "ratesEURValue: " + ratesEURValue);
             euroExchangeRage = "" + ratesEURValue;
         } catch (JSONException e) {
             e.printStackTrace();
