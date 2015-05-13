@@ -333,24 +333,23 @@ Note: calculation of distance is based on rssi and txPower values as broadcasted
 #### Monitoring subset of spotz
 
 You might want to monitor not all Spotz but subset of spotz in your application. In this case, on [Spotz console](http://spotz.localz.com) for the spotz that you want to monitor, you can set an attribute (or few attributes) with the value. Later when initialising Spotz android SDK, you can pass attribute(s) name and value(s) to only monitor for the matching spotz. 
-In this case, SDK initialization will be similar to the following:
-<pre>
-        <b>Map<String, String> attributes = new HashMap<String, String>();
-        attributes.put("show", "yes"); 
-        attributes.put("city", "Melbourne");</b>     
-        Spotz.getInstance().initialize(context, // Your context
-                "your-application-id",          // Your application ID goes here
-                "your-client-key",              // Your client key goes here
-                <b>attributes,</b>
-                null,
-                new InitializationListenerAdapter() {
-                    @Override
-                    public void onInitialized() {
-                        // Now that we're initialized, we can start scanning for Spotz here 
-                    }
-                }
-        );
-</pre>
+In this case, SDK initialization will be similar to the following:  
+
+	Map<String, String> attributes = new HashMap<String, String>();
+	attributes.put("show", "yes"); 
+	attributes.put("city", "Melbourne");</b>     
+	Spotz.getInstance().initialize(context, // Your context
+		"your-application-id",          // Your application ID goes here
+		"your-client-key",              // Your client key goes here
+		attributes,
+		null,
+		new InitializationListenerAdapter() {
+			@Override
+			public void onInitialized() {
+			// Now that we're initialized, we can start scanning for Spotz here 
+			}
+		}
+	);
 
 #### Integration with 3rd party systems
 
