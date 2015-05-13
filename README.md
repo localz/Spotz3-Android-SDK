@@ -300,7 +300,7 @@ Advanced Features
 Spotz SDK support restarting of monitoring for spotz after phone was rebooted. Just declare Broadcast Receiver with intent filter: "android.intent.action.BOOT_COMPLETED" as described in section 3.4. SDK will take care of everything else!
 
 #### Ranging
-Ranging is an iOS term. There are two ways that application can modes that app can monitor spotz:
+Ranging is an iOS term. There are two ways that application can modes that app can monitor spotz:  
 1. Region Monitoring - SDK will look for spotz with regular, reasonably infrequent interval (in minutes) and will notify application when spot is detected. Monitoring does NOT run in your application process and your application notified using Brodcast Receivers. Monitoring is reasonably inexpensive in terms of battery and CPU usage.  
 2. Ranging - SDK will return distance to the previously discovered spotz. Ranging runs in your process and has to be scheduled by your process and typically very frequent (e.g. every few sec). Ranging is very expesive, hence consider carefully when you range and never forget to stop ranging.  
 In Spotz Android SDK ranging implemented as following:  
