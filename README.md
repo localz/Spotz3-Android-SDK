@@ -305,7 +305,7 @@ Ranging is an iOS term. There are two ways that application can modes that app c
 2. Ranging - SDK will return distance to the previously discovered spotz. Ranging runs in your process and has to be scheduled by your process and typically very frequent (e.g. every few sec). Ranging is very expesive, hence consider carefully when you range and never forget to stop ranging.  
 In Spotz Android SDK ranging implemented as following:  
 1. You define a beacon on Spotz Console as ranging (Immediate 0-1 meters, Near 0-5 meters, Far 0-50 meters). SDK monitor spotz. When ranging beacon is detected, SDK will calculate the distance and will only notify that you in range of the Spot if distance is less than you specify on the console.  
-2. Once you in range, if you open the app, you will need to schedule ranging, which can be achieve in many different ways. In the sample application this is by having handler scheduling runnable ever 1 sec to range.  
+2. Once you in range, if you open the app, you will need to schedule ranging, which can be achieve in many different ways. In the sample application handler schedules runnable ever 1 sec:  
 
 	Handler rangingHandler = new Handler();
 	Runnable rangingRunnable = new Runnable() {
@@ -314,7 +314,7 @@ In Spotz Android SDK ranging implemented as following:
 		}
 	};
 
-To start actual ranging call:   
+and rangeIfRequired() method has actual ranging call:   
 
 	Spotz.getInstance().range(context, new RangingListener() {  
 		@Override  
