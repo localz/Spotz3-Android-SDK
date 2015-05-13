@@ -180,19 +180,19 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission only required if yo
                 <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FINISH" />
             </intent-filter>
         </receiver>
-    3.2.These broadcast receivers are need to be implemented in the application(assuming com.foo.app.receivers is a package in your application).  
+    3.2.These broadcast receivers are need to be implemented in the application(assuming com.foo.app is a package name of your application com.foo.app.receivers is a java package of your receivers).  
         They will be invoked if device enters or exit a Spot. 
         Example implementation can be found in this sample application. Typical implementation will create a notification.  
         
         <receiver android:name="com.foo.app.receivers.OnEnteredSpotBroadcastReceiver" >
             <intent-filter>
-                <action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_SPOT_ENTER" />
+                <action android:name="com.foo.app.SPOTZ_ON_SPOT_ENTER" />
             </intent-filter>
         </receiver>
 
         <receiver android:name="com.foo.app.receivers.OnExitedSpotBroadcastReceiver" >
             <intent-filter>
-                <action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_SPOT_EXIT" />
+                <action android:name="com.foo.app.SPOTZ_ON_SPOT_EXIT" />
             </intent-filter>
         </receiver>
         
@@ -200,7 +200,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission only required if yo
     
         <receiver android:name="com.foo.app.receivers.OnIntegrationRespondedBroadcastReceiver" >
             <intent-filter>
-                <action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_INTEGRATION_RESPONDED" />
+                <action android:name="com.foo.app.SPOTZ_ON_INTEGRATION_RESPONDED" />
             </intent-filter>
         </receiver>
 
@@ -297,32 +297,38 @@ Advanced Features
 Spotz SDK support restarting of monitoring for spotz after phone was rebooted. Just declare Broadcast Receiver with intent filter: "android.intent.action.BOOT_COMPLETED" as described in section 3.4. SDK will take care of everything else!
 
 #### Ranging
-Ranging is an iOS term. There are two modes that app can be interested in points of interests (Spotz):   
-1. Monitoring - SDK will look for spotz with regular, resonably infrequent interval (in minutes) and will notify application when spot is detected. Monitoring does NOT run in your application process and your application notified using Brodcast Receivers. Monitoring is reasonably inexpensive in terms of battery and CPU usage. 
-2. Ranging - SDK will scan with the aim of get distance to the beacons in spot. Ranging runs in your process and has to be scheduled by your process. Scheduling is typically very frequent (e.g. every 1 sec). Ranging is very expesive, hence consider carefully when you range and never forget to stop ranging. 
+Ranging is an iOS term. There are two ways that application can modes that app can monitor spotz:
+1. Region Monitoring - SDK will look for spotz with regular, reasonably infrequent interval (in minutes) and will notify application when spot is detected. Monitoring does NOT run in your application process and your application notified using Brodcast Receivers. Monitoring is reasonably inexpensive in terms of battery and CPU usage.  
+2. Ranging - SDK will return distance to the previously discovered spotz. Ranging runs in your process and has to be scheduled by your process and typically very frequent (e.g. every few sec). Ranging is very expesive, hence consider carefully when you range and never forget to stop ranging.  
 In Spotz Android SDK ranging implemented as following:  
-1. You define a beacon on Spotz Console as ranging (Immediate 0-1 meters, Near 0-5 meters, Far 0-50 meters). SDK monitor spotz. When ranging beacon is detected, SDK will calculate the distangeand will only notify that you in range of the Spot if distance is less than you specify on the console. 
-3. Once you in range, if you open the app, you will need to schedule ranging, which can be achieve in many different ways. In the sample application this is by having handler scheduling runnable ever 1 sec to range.  
-<pre>
+1. You define a beacon on Spotz Console as ranging (Immediate 0-1 meters, Near 0-5 meters, Far 0-50 meters). SDK monitor spotz. When ranging beacon is detected, SDK will calculate the distangeand will only notify that you in range of the Spot if distance is less than you specify on the console.  
+2. Once you in range, if you open the app, you will need to schedule ranging, which can be achieve in many different ways. In the sample application this is by having handler scheduling runnable ever 1 sec to range.  
+
 	Handler rangingHandler = new Handler();
 	Runnable rangingRunnable = new Runnable() {
 		public void run() {
 			rangeIfRequired();
 		}
 	};
-</pre>
 
-To start actual ranging call:
-<pre>
-Spotz.getInstance().range(context, new RangingListener() {
-	@Override
-	public void onRangeIterationCompleted(HashMap<String, Double> spotIdsAndDistances) {
-	// process spotIdsAndDistances <key, value> pairs.
+To start actual ranging call:   
+
+	Spotz.getInstance().range(context, new RangingListener() {  
+		@Override  
+		public void onRangeIterationCompleted(HashMap<String, Double> spotIdsAndDistances) {  
+			// process spotIdsAndDistances <key, value> pairs.  
+		}  
+	});  
+
+ **Important!** Start scanning in onResume() and stop onPause() to avoid unnecessary battery drain.  
+Note: calculation of distance is based on rssi and txPower values as broadcasted by beacon. Distance is not exactly scientifically accurate. More accurate value could be derived by averaging distance over number of ranging samples. Spotz SDK uses the following formula for distance:  
+
+	double ratio = rssi * 1.0 / tx;
+	if (ratio < 1.0) {
+		distance = (float) Math.pow(ratio, 10);
+	} else {
+		distance = (float) ((0.42093) * Math.pow(ratio, 6.9476) + 0.54992);
 	}
-});
-</pre>
-
- **Important!** Start scanning in onResume() and stop onPause() to avoid unnecessary battery drain. 
 
 #### Monitoring subset of spotz
 
