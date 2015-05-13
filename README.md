@@ -58,7 +58,7 @@ The sample app requires devices running Android 4.3 or newer.
     <img alt="Beacon Toolkit on App Store" width="100" height="33"
          src="http://localz.co/blog/wp-content/uploads/2014/03/app-store-300x102.jpg" />
     </a>    
-    Hopefully when Android supports peripheral mode in Android L, we will also have an Android Beacon Toolkit!
+    As Android L now supports peripheral, we will have version of Android Beacon Toolkit sometime soon!
 
   4. Insert your Spotz application ID and client key into MainActivity.java - these can be found in the Spotz console under your application. Be sure to use the *Android* client key:
 
@@ -207,7 +207,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission only required if yo
             </intent-filter>
         </receiver>
 
-    3.4.This receiver will be invoked when phone rebooted. Register this received only required to restart monitoring after reboot.  
+    3.4.This receiver will be invoked when phone rebooted. Register this received only if you required to restart monitoring after reboot.  
    
         <receiver android:name="com.localz.spotz.sdk.OnRebootReceiver" >
             <intent-filter>  
