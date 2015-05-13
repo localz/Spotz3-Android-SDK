@@ -54,9 +54,8 @@ The sample app requires devices running Android 4.3 or newer.
     <a href="https://itunes.apple.com/us/app/beacon-toolkit/id838735159?ls=1&mt=8">
     <img alt="Beacon Toolkit on App Store" width="100" height="33"
          src="http://localz.co/blog/wp-content/uploads/2014/03/app-store-300x102.jpg" />
-  </a>
-    
-  Hopefully when Android supports peripheral mode in Android L, we will also have an Android Beacon Toolkit!
+    </a>    
+    Hopefully when Android supports peripheral mode in Android L, we will also have an Android Beacon Toolkit!
 
   4. Insert your Spotz application ID and client key into MainActivity.java - these can be found in the Spotz console under your application. Be sure to use the *Android* client key:
 
@@ -181,17 +180,17 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission only required if yo
                 <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FINISH" />
             </intent-filter>
         </receiver>
-    3.2.These broadcast receivers are need to be implemented in the application.
+    3.2.These broadcast receivers are need to be implemented in the application(assuming com.foo.app.receivers is a package in your application).  
         They will be invoked if device enters or exit a Spot. 
         Example implementation can be found in this sample application. Typical implementation will create a notification.  
         
-        <receiver android:name="com.localz.spotz.sdk.app.receiver.OnEnteredSpotBroadcastReceiver" >
+        <receiver android:name="com.foo.app.receivers.OnEnteredSpotBroadcastReceiver" >
             <intent-filter>
                 <action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_SPOT_ENTER" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.localz.spotz.sdk.app.receiver.OnExitedSpotBroadcastReceiver" >
+        <receiver android:name="com.foo.app.receivers.OnExitedSpotBroadcastReceiver" >
             <intent-filter>
                 <action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_SPOT_EXIT" />
             </intent-filter>
@@ -199,13 +198,13 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission only required if yo
         
     3.3.This receiver only required if you integrated Spotz platform with 3rd party system.The receiver will be invoked when reply is received from 3rd party system. See section "Integration with 3rd party systems" below:
     
-        <receiver android:name="com.localz.spotz.sdk.app.receiver.OnIntegrationRespondedBroadcastReceiver" >
+        <receiver android:name="com.foo.app.receivers.OnIntegrationRespondedBroadcastReceiver" >
             <intent-filter>
                 <action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_INTEGRATION_RESPONDED" />
             </intent-filter>
         </receiver>
 
-   3.4.This receiver will be invoked when phone rebooted. Register this received only required to restart monitoring after reboot.  
+    3.4.This receiver will be invoked when phone rebooted. Register this received only required to restart monitoring after reboot.  
    
         <receiver android:name="com.localz.spotz.sdk.OnRebootReceiver" >
             <intent-filter>  
@@ -383,5 +382,3 @@ License
 =======
 
 Copyright 2015 [Localz Pty Ltd](http://www.localz.com/)
-
- 
