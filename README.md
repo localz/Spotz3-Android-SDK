@@ -351,17 +351,17 @@ In this case, SDK initialization will be similar to the following:
 		}
 	);
 
-#### Integration with 3rd party systems
+#### Integration with 3rd party systems  
 
-[Spotz integration guide] (https://github.com/localz/Spotz-Docs/blob/master/README.md) introduces the concept and provides details of how to add integration to spotz. Sometimes you might want to provide indentity of the user that uses your application to the system that you integrate with. This is achieve by provide the identity attributes to Spotz when initialising Spotz SDK. E.g.:
-<pre>
-        <b>final DeviceUpdateIdsPutRequest updateIdsRequest = new DeviceUpdateIdsPutRequest();
-		updateIdsRequest.ids = new DeviceUpdateIdsPutRequest.Ids();
-		updateIdsRequest.ids.payload = new HashMap<String, String>();
-		updateIdsRequest.ids.payload.put("customerAccount", "user123");
-		// the statement above will make customerAccount value "user123" 
-		// available to all 3rd party integration systems. 
-		// Should you wish to pass the value ONLY to a one 3rd party system, 
+[Spotz integration guide] (https://github.com/localz/Spotz-Docs/blob/master/README.md) introduces the concept and provides details of how to add integration to spotz. Sometimes you might want to provide indentity of the user that uses your application to the system that you integrate with. This is achieve by provide the identity attributes to Spotz when initialising Spotz SDK. E.g.:  
+
+	final DeviceUpdateIdsPutRequest updateIdsRequest = new DeviceUpdateIdsPutRequest();
+	updateIdsRequest.ids = new DeviceUpdateIdsPutRequest.Ids();
+	updateIdsRequest.ids.payload = new HashMap<String, String>();
+	updateIdsRequest.ids.payload.put("customerAccount", "user123");
+	// the statement above will make customerAccount value "user123" 
+	// available to all 3rd party integration systems. 
+	// Should you wish to pass the value ONLY to a one 3rd party system, 
 		// the syntax is "integrationName.idName", e.g.
 		updateIdsRequest.ids.payload.put("zapierWebhook.privateUserId", "#565589"); </b>     
         Spotz.getInstance().initialize(context, // Your context
@@ -371,12 +371,12 @@ In this case, SDK initialization will be similar to the following:
                 <b>updateIdsRequest</b>,
                 new InitializationListenerAdapter() {
                     @Override
-                    public void onInitialized() {
-                        // Now that we're initialized, we can start scanning for Spotz here 
-                    }
-                }
-        );
-</pre>
+		   public void onInitialized() {
+			// Now that we're initialized, we can start scanning for Spotz here 
+		   }
+		}
+	);
+
 
 Contribution
 ============
