@@ -257,7 +257,7 @@ Your project is now ready to start using the Spotz SDK!
         // scanDurationMs - millisecs to scan for
         Spotz.getInstance().startScanningForSpotz(context, scanIntervalMs, scanDurationMs);
   
-  **Important!** It might be tempting to have very short scanIntervalMs so that your application will be more responsive to beacons. However, in Android 5.1 introduces change where intervals less than 60 sec will likely not be honored. You might see the following errors in the adb log: "Suspiciously short interval 30000 millis; expanding to 60 seconds". To support up to second updates when app is in foreground use ranging as described in the Advanced Features section below. 
+  **Important!** It might be tempting to have very short scanIntervalMs so that your application will be more responsive to beacons. However, in Android 5.1 the change is introduces where intervals less than 60 sec is unlikely to be honoured. You might see the following errors in the adb log: "Suspiciously short interval 30000 millis; expanding to 60 seconds". To support up to second updates when app is in foreground use ranging as described in the Advanced Features section below. 
   
   The SDK will scan for beacons while your app is in the background.
   
