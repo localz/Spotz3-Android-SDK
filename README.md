@@ -299,29 +299,29 @@ Spotz SDK support restarting of monitoring for spotz after phone was rebooted. J
 
 #### Ranging
 Ranging is an iOS term. There are two modes that app can be interested in points of interests (Spotz):   
-1. Monitoring - SDK will look for spotz with regular, resonably infrequent interval (in minutes) and will notify application when spot is detected. Monitoring does NOT run in your application process and your application notified using Brodcast Receivers. Monitoring is reasonably inexpensive in terms of battery and CPU usage. 
+1. Monitoring - SDK will look for spotz with regular, resonably infrequent interval (in minutes) and will notify application when spot is detected. Monitoring does NOT run in your application process and your application notified using Brodcast Receivers. Monitoring is reasonably inexpensive in terms of battery and CPU usage.   
 2. Ranging - SDK will scan with the aim of get distance to the beacons in spot. Ranging runs in your process and has to be scheduled by your process. Scheduling is typically very frequent (e.g. every 1 sec). Ranging is very expesive, hence consider carefully when you range and never forget to stop ranging. 
-In Spotz Android SDK ranging implemented as following:  
-1. You define a beacon on Spotz Console as ranging (Immediate 0-1 meters, Near 0-5 meters, Far 0-50 meters). SDK monitor spotz. When ranging beacon is detected, SDK will calculate the distangeand will only notify that you in range of the Spot if distance is less than you specify on the console. 
-3. Once you in range, if you open the app, you will need to schedule ranging, which can be achieve in many different ways. In the sample application this is by having handler scheduling runnable ever 1 sec to range.  
-<pre>
+In Spotz Android SDK ranging implemented as following:    
+1. You define a beacon on Spotz Console as ranging (Immediate 0-1 meters, Near 0-5 meters, Far 0-50 meters). SDK monitor spotz. When ranging beacon is detected, SDK will calculate the distangeand will only notify that you in range of the Spot if distance is less than you specify on the console.   
+2. Once you in range, if you open the app, you will need to schedule ranging, which can be achieve in many different ways. In the sample application this is by having handler scheduling runnable ever 1 sec to range.  
+
 	Handler rangingHandler = new Handler();
 	Runnable rangingRunnable = new Runnable() {
 		public void run() {
 			rangeIfRequired();
 		}
 	};
-</pre>
+
 
 To start actual ranging call:
-<pre>
-Spotz.getInstance().range(context, new RangingListener() {
-	@Override
-	public void onRangeIterationCompleted(HashMap<String, Double> spotIdsAndDistances) {
-	// process spotIdsAndDistances <key, value> pairs.
-	}
-});
-</pre>
+
+	Spotz.getInstance().range(context, new RangingListener() {
+		@Override
+		public void onRangeIterationCompleted(HashMap<String, Double> spotIdsAndDistances) {
+		// process spotIdsAndDistances <key, value> pairs.
+		}
+	});
+
 
  **Important!** Start scanning in onResume() and stop onPause() to avoid unnecessary battery drain. 
 
