@@ -14,23 +14,26 @@ Changelog
 
 **2.0.2**	
 * Added geofence support.	
-* Added monitoring of subset of spotz.	
+* Added monitoring of subset of spotz.  
 * Added integration with 3rd party systems support.
-
+*  
+ 
 **1.3.1**	
 * Fixed triggering on Spotz that did not exist for the application.
+*
 
 **1.3.0**	
 * Initial public release.
+*
 
 What does the sample app do?
 ============================
 
 The app simply tells you if you are in the proximity of a Spot. 
 
-If you are in the proximity of a a Spot, you will receive notification. If you open the app, you will also be able to see any data associated with that Spot. Further, if you define a Spot as "ranging", you will also see distance to the closest beacon in the spot. 
+If you are in the proximity of a Spot, you will receive notification. If you open the app, you will also be able to see any data associated with that Spot. Further, if you define a Spot as "ranging", you will also see distance to the closest beacon in the spot. 
 
-You can start and monitoring will continue even if activity is exited, or even phone rebooted. At any point, if you start activity, it will show status (scanning or not), one of the Spot that you currenly in range of and allow to stop scanning.
+Monitoring will continue even if activity is exited, or even phone rebooted. 
 
 How to run the sample app
 =========================
