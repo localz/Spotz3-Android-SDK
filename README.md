@@ -8,6 +8,10 @@ The Spotz Android SDK allows your Android app to detect when it is in range of y
 Changelog
 =========
 
+**3.0.0**	
+* Added running on background support.  
+* Added ranging support.  
+
 **2.0.2**	
 * Added geofence support.	
 * Added monitoring of subset of spotz.	
@@ -22,9 +26,11 @@ Changelog
 What does the sample app do?
 ============================
 
-The app simply tells you if you are in range, or out of range of a Spot.
+The app simply tells you if you are in the proximity of a Spot. 
 
-When a Spot is in range, the app will also display any data associated with that Spot.
+If you are in the proximity of a a Spot, you will receive notification. If you open the app, you will also be able to see any data associated with that Spot. Further, if you define a Spot as "ranging", you will also see distance to the closest beacon in the spot. 
+
+You can start and monitoring will continue even if activity is exited, or even phone rebooted. At any point, if you start activity, it will show status (scanning or not), one of the Spot that you currenly in range of and allow to stop scanning.
 
 How to run the sample app
 =========================
@@ -80,9 +86,9 @@ a dependency in your build.gradle script:
     }
     ...
     dependencies {
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:2.0.2@aar'
-        compile 'com.localz.spotz.sdk:spotz-sdk-api:1.2.2'
-        compile 'com.localz.proximity.ble:ble-sdk-android:1.1.2@aar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:2.0.6@aar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-api:1.3.2'
+        compile 'com.localz.proximity.ble:ble-smart-sdk-android:1.0.1@aar'
         compile 'com.google.android.gms:play-services:6.5.+'
         ...
     }
@@ -93,20 +99,20 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-android</artifactId>
-      <version>2.0.2</version>
+      <version>2.0.6</version>
       <type>aar</type>
     </dependency>
     
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-api</artifactId>
-      <version>1.2.2</version>
+      <version>1.3.2</version>
     </dependency>
     
     <dependency>
       <groupId>com.localz.proximity.ble</groupId>
-      <artifactId>ble-sdk-android</artifactId>
-      <version>1.1.2</version>
+      <artifactId>ble-smart-sdk-android</artifactId>
+      <version>1.0.1</version>
       <type>aar</type>
     </dependency>
 
@@ -126,12 +132,12 @@ You will also need add dependency to google play services. Google play services 
 
 Otherwise, if you are old school, you can manually copy all the JARs in the libs folder and add them to your project's dependencies. Your libs folder will have at least the following JARs:
 
-- ble-sdk-android-1.1.2.jar
+- ble-smart-sdk-android-1.0.1.jar
 - google-http-client-1.19.0.jar
 - google-http-client-gson-1.19.0.jar
 - gson-2.3.jar
-- spotz-sdk-android-2.0.2.jar
-- spotz-sdk-api-1.2.2.jar
+- spotz-sdk-android-2.0.6.jar
+- spotz-sdk-api-1.3.2.jar
 
 and also add "google play services lib" library project to your project. For instructions refer to [http://developer.android.com/google/play-services/setup.html](http://developer.android.com/google/play-services/setup.html). Select "Using Eclipse with ADT". 
 
@@ -152,14 +158,62 @@ There are only 3 actions to implement - **initialize, scan, and listen!**
         <uses-permission android:name="android.permission.BLUETOOTH" />
         <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
         <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/> 
-        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>  
+        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/> 
+Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission only required if you want to restart monitoring after phone reboot.
 
   2. Define the following service in your AndroidManifest.xml:
 
         <service android:name="com.localz.proximity.ble.services.BleHeartbeat" />
-        <service android:name="com.localz.spotz.sdk.geofence.GeofenceTransitionsIntentService"/>
+        <service android:name="com.localz.spotz.sdk.geofence.GeofenceTransitionsIntentService"/>  
         
-  3. Initialize the SDK by providing your application ID and client key (as shown on Spotz console):
+  3. Define the following broadcast receivers in your AndroidManifest.xml:  
+    3.1.These broadcast receivers are used internally in Spotz SDK. They must be registered in AndroidManifest file:
+    
+        <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFoundReceiver" >
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FOUND" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFinishedReceiver" >
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FINISH" />
+            </intent-filter>
+        </receiver>
+    3.2.These broadcast receivers are need to be implemented in the application.
+        They will be invoked if device enters or exit a Spot. 
+        Example implementation can be found in this sample application. Typical implementation will create a notification.  
+        
+        <receiver android:name="com.localz.spotz.sdk.app.receiver.OnEnteredSpotBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_SPOT_ENTER" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.localz.spotz.sdk.app.receiver.OnExitedSpotBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_SPOT_EXIT" />
+            </intent-filter>
+        </receiver>
+        
+    3.3.This receiver only required if you integrated Spotz platform with 3rd party system.The receiver will be invoked when reply is received from 3rd party system. See section "Integration with 3rd party systems" below:
+    
+        <receiver android:name="com.localz.spotz.sdk.app.receiver.OnIntegrationRespondedBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_INTEGRATION_RESPONDED" />
+            </intent-filter>
+        </receiver>
+
+   3.4.This receiver will be invoked when phone rebooted. Register this received only required to restart monitoring after reboot.  
+   
+        <receiver android:name="com.localz.spotz.sdk.OnRebootReceiver" >
+            <intent-filter>  
+                <action android:name="android.intent.action.BOOT_COMPLETED" />  
+            </intent-filter>  
+        </receiver>
+        
+  4. Initialize the SDK by providing your application ID and client key (as shown on Spotz console):
   
         Spotz.getInstance().initialize(context, // Your context
                 "your-application-id",          // Your application ID goes here
@@ -173,6 +227,8 @@ There are only 3 actions to implement - **initialize, scan, and listen!**
                     }
                 }
         );
+
+The SDK will communicate with Spotz server, authenticate, and register device. Then it will download the spotz that you registered on the [Spotz console](http://spotz.localz.com). If you ever change spotz details, you will need to call this method again. 
   
 Your project is now ready to start using the Spotz SDK!
 
@@ -182,6 +238,9 @@ Your project is now ready to start using the Spotz SDK!
 
   To start scanning for Spotz, use one of these:
   
+        // Smart scanning - intensity of scanning will get ballance between battery life and responsivness to beacons 
+        Spotz.getInstance().startScanningForSpotz(context, Spotz.ScanMode.SMART);
+        
         // Normal scanning - ideal for general use 
         Spotz.getInstance().startScanningForSpotz(context, Spotz.ScanMode.NORMAL);
 
@@ -195,6 +254,8 @@ Your project is now ready to start using the Spotz SDK!
         // scanIntervalMs - millisecs between each scan
         // scanDurationMs - millisecs to scan for
         Spotz.getInstance().startScanningForSpotz(context, scanIntervalMs, scanDurationMs);
+  
+  **Important!** It might be tempting to have very short scanIntervalMs so that your application will be more responsive to beacons. However, in Android 5.1 introduces change where intervals less than 60 sec will likely not be honored. You might see the following errors in the adb log: "Suspiciously short interval 30000 millis; expanding to 60 seconds". To support up to second updates when app is in foreground use ranging as described in the Advanced Features section below. 
   
   The SDK will scan for beacons while your app is in the background.
   
@@ -219,104 +280,51 @@ Your project is now ready to start using the Spotz SDK!
   
 #### On Spot Enter
 
-  To listen for when the device enters a Spot, define a <code>BroadcastReceiver</code> that filters for action <code>\<your package\>.SPOTZ_ON_SPOT_ENTER</code> e.g. <code>com.foo.myapp.SPOTZ_ON_SPOT_ENTER</code>
-    You can find your package name in AndroidManifest.xml file:
-
-        <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-                package="com.foo.myapp" >
-        
-  Here's an example (don't forget to unregister your BroadcastReceiver when no longer needed):
-
-        BroadcastReceiver enteredSpotBroadcastReceiver = new OnEnteredSpotBroadcastReceiver();
-        registerReceiver(enteredSpotBroadcastReceiver,
-                new IntentFilter(getPackageName() + ".SPOTZ_ON_SPOT_ENTER"));
-
-        ...
-
-        public class OnEnteredSpotBroadcastReceiver extends BroadcastReceiver {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Spot spot = (Spot) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
-                
-                // Do something with the Spot here!    
-            }
-        }
-
-  Or if you prefer, you can define your BroadcastReceiver in AndroidManifest.xml:
-
-        <receiver android:name="com.foo.app.services.OnEnteredSpotBroadcastReceiver" >
-            <intent-filter>
-                <action android:name="com.foo.app.SPOTZ_ON_SPOT_ENTER" />
-            </intent-filter>
-        </receiver>
-        
+  To listen for when the device enters a Spot, define a <code>BroadcastReceiver</code> that filters for action <code>\<your package\>.SPOTZ\_ON\_SPOT_ENTER</code> in AndroidManifest.xml as described in section 3.2.
+  
 #### On Spot Exit
         
-  To listen for when the device exits a Spot, define a <code>BroadcastReceiver</code> that filters for action <code>\<your package\>.SPOTZ_ON_SPOT_EXIT</code> e.g. <code>com.foo.myapp.SPOTZ_ON_SPOT_EXIT</code>
+  To listen for when the device exits a Spot, define a <code>BroadcastReceiver</code> that filters for action <code>\<your package\>.SPOTZ\_ON\_SPOT_EXIT</code> in the AndroidManifest.xml as described in section 3.2.  
+  
+#### On 3rd party Integration response received
 
-  Here's an example (don't forget to unregister your BroadcastReceiver when no longer needed):
-
-        BroadcastReceiver exitedSpotBroadcastReceiver = new OnExitedSpotBroadcastReceiver();
-        registerReceiver(exitedSpotBroadcastReceiver,
-                new IntentFilter(getPackageName() + ".SPOTZ_ON_SPOT_EXIT"));
-
-        ...
-
-        public class OnExitedSpotBroadcastReceiver extends BroadcastReceiver {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Spot spot = (Spot) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
-    
-                // Do something with the Spot here!
-            }
-        }
-
-  Or if you prefer, here is the AndroidManifest.xml version:
-
-        <receiver android:name="com.foo.app.services.OnExitedSpotBroadcastReceiver" >
-            <intent-filter>
-                <action android:name="com.foo.app.SPOTZ_ON_SPOT_EXIT" />
-            </intent-filter>
-        </receiver>
- 
- #### On 3rd party Integration response received
-
-  To listen for when response received from third party integration systems, define a <code>BroadcastReceiver</code> that filters for action <code>\<your package\>.SPOTZ_ON_INTEGRATION_RESPONDED</code> e.g. <code>com.foo.myapp.SPOTZ_ON_INTEGRATION_RESPONDED</code>
-    You can find your package name in AndroidManifest.xml file:
-
-        <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-                package="com.foo.myapp" >
-        
-  Here's an example (don't forget to unregister your BroadcastReceiver when no longer needed):
-
-        BroadcastReceiver enteredSpotBroadcastReceiver = new OnEnteredSpotBroadcastReceiver();
-        registerReceiver(enteredSpotBroadcastReceiver,
-                new IntentFilter(getPackageName() + ".SPOTZ_ON_INTEGRATION_RESPONDED"));
-
-        ...
-
-        public class OnIntegrationRespondedBroadcastReceiver extends BroadcastReceiver {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String integrationResponse = (String) intent.getSerializableExtra(Spotz.EXTRA_INTEGRATION);
-                
-                // Do something with the response from 3rd party systems!
-                // As response specific to the Response is specific to the 
-            }
-        }
-
-  Or if you prefer, you can define your BroadcastReceiver in AndroidManifest.xml:
-
-        <receiver android:name="com.foo.app.services.OnIntegrationRespondedBroadcastReceiver" >
-            <intent-filter>
-                <action android:name="com.foo.app.SPOTZ_ON_INTEGRATION_RESPONDED" />
-            </intent-filter>
-        </receiver>
+  To listen for when response received from third party integration systems, define a <code>BroadcastReceiver</code> that filters for action <code>\<your package\>.SPOTZ\_ON\_INTEGRATION\_RESPONDED</code> in AndroidManifest.xml as described in section 3.2.
         
 
 
 Advanced Features
 =================
+#### Restarting monitoring when phone reboots
+Spotz SDK support restarting of monitoring for spotz after phone was rebooted. Just declare Broadcast Receiver with intent filter: "android.intent.action.BOOT_COMPLETED" as described in section 3.4. SDK will take care of everything else!
+
+#### Ranging
+Ranging is an iOS term. There are two modes that app can be interested in points of interests (Spotz):   
+1. Monitoring - SDK will look for spotz with regular, resonably infrequent interval (in minutes) and will notify application when spot is detected. Monitoring does NOT run in your application process and your application notified using Brodcast Receivers. Monitoring is reasonably inexpensive in terms of battery and CPU usage. 
+2. Ranging - SDK will scan with the aim of get distance to the beacons in spot. Ranging runs in your process and has to be scheduled by your process. Scheduling is typically very frequent (e.g. every 1 sec). Ranging is very expesive, hence consider carefully when you range and never forget to stop ranging. 
+In Spotz Android SDK ranging implemented as following:  
+1. You define a beacon on Spotz Console as ranging (Immediate 0-1 meters, Near 0-5 meters, Far 0-50 meters). SDK monitor spotz. When ranging beacon is detected, SDK will calculate the distangeand will only notify that you in range of the Spot if distance is less than you specify on the console. 
+3. Once you in range, if you open the app, you will need to schedule ranging, which can be achieve in many different ways. In the sample application this is by having handler scheduling runnable ever 1 sec to range.  
+<pre>
+	Handler rangingHandler = new Handler();
+	Runnable rangingRunnable = new Runnable() {
+		public void run() {
+			rangeIfRequired();
+		}
+	};
+</pre>
+
+To start actual ranging call:
+<pre>
+Spotz.getInstance().range(context, new RangingListener() {
+	@Override
+	public void onRangeIterationCompleted(HashMap<String, Double> spotIdsAndDistances) {
+	// process spotIdsAndDistances <key, value> pairs.
+	}
+});
+</pre>
+
+ **Important!** Start scanning in onResume() and stop onPause() to avoid unnecessary battery drain. 
+
 #### Monitoring subset of spotz
 
 You might want to monitor not all Spotz but subset of spotz in your application. In this case, on [Spotz console](http://spotz.localz.com) for the spotz that you want to monitor, you can set an attribute (or few attributes) with the value. Later when initialising Spotz android SDK, you can pass attribute(s) name and value(s) to only monitor for the matching spotz. 
@@ -341,7 +349,7 @@ In this case, SDK initialization will be similar to the following:
 
 #### Integration with 3rd party systems
 
-[Spotz integration guide] (http://spotz.localz.com) introduces the concept and provides details of how to add integration to spotz. Sometimes you might want to provide indentity of the user that uses your application to the system that you integrate with. This is achieve by provide the identity attributes to Spotz when initialising Spotz SDK. E.g.:
+[Spotz integration guide] (https://github.com/localz/Spotz-Docs/blob/master/README.md) introduces the concept and provides details of how to add integration to spotz. Sometimes you might want to provide indentity of the user that uses your application to the system that you integrate with. This is achieve by provide the identity attributes to Spotz when initialising Spotz SDK. E.g.:
 <pre>
         <b>final DeviceUpdateIdsPutRequest updateIdsRequest = new DeviceUpdateIdsPutRequest();
 		updateIdsRequest.ids = new DeviceUpdateIdsPutRequest.Ids();

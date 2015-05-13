@@ -3,19 +3,22 @@
     package="com.localz.spotz.sdk.app"
     android:versionCode="2"
     android:versionName="1.3.1" >
-    
+     
  	<uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
-    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false"/>
     
-    <uses-sdk
+    <!-- Only need this permission, if it is required to start monitoring after phone reboot -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+  
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false"/>
+      
+    <uses-sdk 
         android:minSdkVersion="18"
         android:targetSdkVersion="19" />
-
+   
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -40,6 +43,51 @@
         
         <!-- These services must be defined in your app to enable background scanning -->
         <service android:name="com.localz.proximity.ble.services.BleHeartbeat" />
+        <service android:name="com.localz.spotz.sdk.geofence.GeofenceTransitionsIntentService"/>
+        
+        <!-- These broadcast receivers are used internally in Spotz SDK. They must be registered in AndroidManifest file -->
+        <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFoundReceiver"  android:exported="false">
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FOUND" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFinishedReceiver"  android:exported="false">
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FINISH" />
+            </intent-filter>
+        </receiver>
+        
+        <!-- These broadcast receivers are need to be implemented in the application.
+        They will be invoked if device enters or exit a Spot. 
+        Example implementation can be found in this sample application. Typical implementation will create a notification. -->
+        <receiver android:name="com.localz.spotz.sdk.app.receiver.OnEnteredSpotBroadcastReceiver" android:exported="false" >
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_SPOT_ENTER" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.localz.spotz.sdk.app.receiver.OnExitedSpotBroadcastReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_SPOT_EXIT" />
+            </intent-filter>
+        </receiver>
+        
+        <!-- This receiver only required if you integrated Spotz platform with 3rd party system.
+        The receiver will be invoked when reply is received from 3rd party system. -->
+        <receiver android:name="com.localz.spotz.sdk.app.receiver.OnIntegrationRespondedBroadcastReceiver" android:exported="false" >
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_INTEGRATION_RESPONDED" />
+            </intent-filter>
+        </receiver>
+        
+        <!-- This receiver will be invoked when phone rebooted. Register this received only required to
+        restart monitoring after reboot. -->
+        <receiver android:name="com.localz.spotz.sdk.OnRebootReceiver" android:exported="false">
+            <intent-filter>  
+                <action android:name="android.intent.action.BOOT_COMPLETED" />  
+            </intent-filter>  
+        </receiver>
         
     </application>
 </manifest>
