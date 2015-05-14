@@ -358,7 +358,7 @@ In this case, SDK initialization will be similar to the following:
 
 	Map<String, String> attributes = new HashMap<String, String>();
 	attributes.put("show", "yes"); 
-	attributes.put("city", "Melbourne");</b>     
+	attributes.put("city", "Melbourne");     
 	Spotz.getInstance().initialize(context, // Your context
 		"your-application-id",          // Your application ID goes here
 		"your-client-key",              // Your client key goes here
