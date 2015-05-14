@@ -383,12 +383,12 @@ In this case, SDK initialization will be similar to the following:
 	// available to all 3rd party integration systems. 
 	// Should you wish to pass the value ONLY to a one 3rd party system, 
 	// the syntax is "integrationName.idName", e.g.
-	updateIdsRequest.ids.payload.put("zapierWebhook.privateUserId", "#565589"); </b>     
+	ids.payload.put("zapierWebhook.privateUserId", "#565589"); </b>     
 	Spotz.getInstance().initialize(context, // Your context
 		"your-application-id",          // Your application ID goes here
 		"your-client-key",              // Your client key goes here
 		null,
-		updateIdsRequest,
+		ids,
 		new InitializationListenerAdapter() {
 			@Override
 			public void onInitialized() {
