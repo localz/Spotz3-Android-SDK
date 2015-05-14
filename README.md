@@ -183,6 +183,17 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission only required if yo
                 <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FINISH" />
             </intent-filter>
         </receiver>
+<receiver android:name="com.localz.spotz.sdk.OnGeofenceEnterBroadcastReceiver"  android:exported="false">
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FOUND" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.localz.spotz.sdk.OnGeofenceExitBroadcastReceiver"  android:exported="false">
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FINISH" />
+            </intent-filter>
+        </receiver>
     3.2.These broadcast receivers are need to be implemented in the application(assuming com.foo.app is a package name of your application com.foo.app.receivers is a java package of your receivers).  
         They will be invoked if device enters or exit a Spot. 
         Example implementation can be found in this sample application. Typical implementation will create a notification.  
