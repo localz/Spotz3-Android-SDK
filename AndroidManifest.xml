@@ -57,6 +57,18 @@
                 <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FINISH" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name="com.localz.spotz.sdk.OnGeofenceEnterBroadcastReceiver"  android:exported="false">
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FOUND" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.localz.spotz.sdk.OnGeofenceExitBroadcastReceiver"  android:exported="false">
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FINISH" />
+            </intent-filter>
+        </receiver>
         
         <!-- These broadcast receivers are need to be implemented in the application.
         They will be invoked if device enters or exit a Spot. 
