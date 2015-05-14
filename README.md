@@ -376,10 +376,9 @@ In this case, SDK initialization will be similar to the following:
 
 [Spotz integration guide] (https://github.com/localz/Spotz-Docs/blob/master/README.md) introduces the concept and provides details of how to add integration to spotz. Sometimes you might want to provide indentity of the user that uses your application to the system that you integrate with. This is achieve by provide the identity attributes to Spotz when initialising Spotz SDK. E.g.:  
 
-	final DeviceUpdateIdsPutRequest updateIdsRequest = new DeviceUpdateIdsPutRequest();
-	updateIdsRequest.ids = new DeviceUpdateIdsPutRequest.Ids();
-	updateIdsRequest.ids.payload = new HashMap<String, String>();
-	updateIdsRequest.ids.payload.put("customerAccount", "user123");
+	final DeviceUpdateIdsPutRequest.Ids ids = new DeviceUpdateIdsPutRequest.Ids();
+	ids.payload = new HashMap<String, String>();
+	ids.payload.put("customerAccount", "user123");
 	// the statement above will make customerAccount value "user123" 
 	// available to all 3rd party integration systems. 
 	// Should you wish to pass the value ONLY to a one 3rd party system, 
