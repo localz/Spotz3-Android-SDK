@@ -9,6 +9,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.localz.spotz.sdk.Spotz;
+import com.localz.spotz.sdk.models.Beacon;
 import com.localz.spotz.sdk.models.Spot;
 
 import java.util.ArrayList;
@@ -50,15 +51,23 @@ public class SpotDataActivity extends Activity {
             dataList.add(spot);
             typeMap.put(i++, TYPE_HEADING);
             dataList.add("Beacons");
-            for (Spot.Beacon beacon : spot.beacons) {
+            if (spot.beacons != null) {
+                for (Beacon beacon : spot.beacons) {
+                    typeMap.put(i++, TYPE_BEACON);
+                    dataList.add(beacon);
+                }
+            }
+            if (spot.enteredBeacon != null) {
                 typeMap.put(i++, TYPE_BEACON);
-                dataList.add(beacon);
+                dataList.add(spot.enteredBeacon);
             }
             typeMap.put(i++, TYPE_HEADING);
             dataList.add("Payload");
-            for (Map.Entry<String, Object> entry : spot.payload.entrySet()) {
-                typeMap.put(i++, TYPE_PAYLOAD);
-                dataList.add(entry);
+            if (spot.payload != null) {
+                for (Map.Entry<String, Object> entry : spot.payload.entrySet()) {
+                    typeMap.put(i++, TYPE_PAYLOAD);
+                    dataList.add(entry);
+                }
             }
         }
 
@@ -123,7 +132,7 @@ public class SpotDataActivity extends Activity {
                     break;
                 case TYPE_SPOT_DATA:
                     Spot spot = (Spot) getItem(position);
-                    viewHolder.id.setText(spot.id);
+                    viewHolder.id.setText(spot.spotId);
                     viewHolder.name.setText(spot.name);
                     viewHolder.spotzDataLayout.setVisibility(View.VISIBLE);
                     viewHolder.heading.setVisibility(View.GONE);
@@ -131,11 +140,11 @@ public class SpotDataActivity extends Activity {
                     viewHolder.payloadLayout.setVisibility(View.GONE);
                     break;
                 case TYPE_BEACON:
-                    Spot.Beacon beacon = (Spot.Beacon) getItem(position);
+                    Beacon beacon = (Beacon) getItem(position);
                     viewHolder.uuid.setText(beacon.uuid);
                     viewHolder.major.setText("" + beacon.major);
                     viewHolder.minor.setText("" + beacon.minor);
-                    viewHolder.serial.setText(beacon.serial);
+//                    viewHolder.serial.setText(beacon.serial);
                     viewHolder.beaconLayout.setVisibility(View.VISIBLE);
                     viewHolder.spotzDataLayout.setVisibility(View.GONE);
                     viewHolder.heading.setVisibility(View.GONE);

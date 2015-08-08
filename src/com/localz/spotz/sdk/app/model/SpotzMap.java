@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.localz.spotz.sdk.models.Spot;
 
@@ -36,9 +37,12 @@ public class SpotzMap extends ConcurrentHashMap<String, Spot> {
 
 		ObjectInputStream inputStream = null;
 		try {
+			if (!file.exists()) {
+				Log.d("SpotzMap", "SpotzMap file not exists - trying to create");
+				file.createNewFile();
+			}
 			inputStream = new ObjectInputStream(new FileInputStream(file));
-			ConcurrentHashMap<String, Spot> spotzFromFile = (ConcurrentHashMap<String, Spot>) inputStream
-					.readObject();
+			ConcurrentHashMap<String, Spot> spotzFromFile = (ConcurrentHashMap<String, Spot>) inputStream.readObject();
 			this.putAll(spotzFromFile);
 		} catch (OptionalDataException e) {
 			// TODO Auto-generated catch block

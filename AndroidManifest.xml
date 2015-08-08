@@ -3,12 +3,17 @@
     package="com.localz.spotz.sdk.app"
     android:versionCode="2"
     android:versionName="1.3.1" >
-     
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
  	<uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.NFC" />
     
     <!-- Only need this permission, if it is required to start monitoring after phone reboot -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -46,27 +51,34 @@
         <service android:name="com.localz.spotz.sdk.geofence.GeofenceTransitionsIntentService"/>
         
         <!-- These broadcast receivers are used internally in Spotz SDK. They must be registered in AndroidManifest file -->
-        <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFoundReceiver"  android:exported="false">
+
+        <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFoundReceiver" >
             <intent-filter>
                 <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FOUND" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFinishedReceiver"  android:exported="false">
+        <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFinishedReceiver" >
             <intent-filter>
                 <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FINISH" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.localz.spotz.sdk.OnGeofenceEnterBroadcastReceiver"  android:exported="false">
+        <receiver android:name="com.localz.spotz.sdk.OnNfcFoundReceiver" >
             <intent-filter>
-                <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FOUND" />
+                <action android:name="com.localz.spotz.sdk.LOCALZ_NFC_ENTER" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.localz.spotz.sdk.OnGeofenceExitBroadcastReceiver"  android:exported="false">
+        <receiver android:name="com.localz.spotz.sdk.OnGeofenceEnterBroadcastReceiver" >
             <intent-filter>
-                <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FINISH" />
+                <action android:name="com.localz.spotz.sdk.LOCALZ_GEOFENCE_TRANSITION_ENTER" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.localz.spotz.sdk.OnGeofenceExitBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.LOCALZ_GEOFENCE_TRANSITION_EXIT" />
             </intent-filter>
         </receiver>
         
@@ -84,6 +96,12 @@
                 <action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_SPOT_EXIT" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name="com.localz.spotz.sdk.app.receiver.OnSpotBeaconDistanceUpdatedBroadcastReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.app.SPOT_BEACON_DISTANCE_UPDATED" />
+            </intent-filter>
+        </receiver>
         
         <!-- This receiver only required if you integrated Spotz platform with 3rd party system.
         The receiver will be invoked when reply is received from 3rd party system. -->
@@ -99,6 +117,12 @@
             <intent-filter>  
                 <action android:name="android.intent.action.BOOT_COMPLETED" />  
             </intent-filter>  
+        </receiver>
+
+        <receiver android:name="com.localz.spotz.sdk.app.receiver.OnShowNotificationBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.app.SPOT_ENTERED_OR_EXITED" />
+            </intent-filter>
         </receiver>
         
     </application>

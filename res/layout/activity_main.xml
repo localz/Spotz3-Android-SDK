@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#95a5a6"
-    tools:context="com.localz.spotz.app.activities.LaunchActivity" >    
+    tools:context="com.localz.spotz.sdk.app.MainActivity" >
 
 
     <View
@@ -21,18 +21,24 @@
         android:layout_centerInParent="true"
         android:background="@drawable/circle" />
 
-    <com.localz.spotz.sdk.app.widgets.CustomFontTextView
-        android:id="@+id/activity_spot_ranging_distance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/circle"
-        android:layout_centerHorizontal="true"
-        android:paddingBottom="28dp"
-        android:text="@string/message_ranging_distance"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        android:visibility="invisible"
-        localz:font="roboto_thin" />
+    <ListView
+        android:id="@+id/spots_list_view"
+        android:layout_above="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!--<com.localz.spotz.sdk.app.widgets.CustomFontTextView-->
+        <!--android:id="@+id/activity_spot_ranging_distance"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_above="@id/circle"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:paddingBottom="28dp"-->
+        <!--android:text="@string/message_ranging_distance"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:textSize="20sp"-->
+        <!--android:visibility="invisible"-->
+        <!--localz:font="roboto_thin" />-->
         
     <com.localz.spotz.sdk.app.widgets.CustomFontTextView
         android:id="@+id/activity_range_text"
@@ -45,16 +51,16 @@
         android:textSize="36sp"
         localz:font="roboto_thin" />
 
-    <com.localz.spotz.sdk.app.widgets.CustomFontTextView
-        android:id="@+id/activity_serial_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/circle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="-26dp"
-        android:gravity="center"
-        android:textColor="#88bdc3c7"
-        android:textSize="12sp" />
+    <!--<com.localz.spotz.sdk.app.widgets.CustomFontTextView-->
+        <!--android:id="@+id/activity_serial_text"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@id/circle"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="-26dp"-->
+        <!--android:gravity="center"-->
+        <!--android:textColor="#88bdc3c7"-->
+        <!--android:textSize="12sp" />-->
 
     <LinearLayout
         android:id="@+id/footer"
@@ -69,6 +75,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:text="@string/start_scanning"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
