@@ -17,15 +17,15 @@ allprojects {
 
 apply plugin: 'com.android.application'
 
-dependencies {
-    compile ('com.localz.spotz.sdk:spotz-sdk-android:3.0.0@aar') {
-        transitive = true
-    }
-}
-
 android {
-    compileSdkVersion 19
-    buildToolsVersion "20.0.0"
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        //applicationId "com.localz.proximity.ble.smart"
+        minSdkVersion 10
+        targetSdkVersion 22
+    }
 
     sourceSets {
         main {
@@ -38,4 +38,22 @@ android {
             assets.srcDirs = ['assets']
         }
     }
+}
+
+dependencies {
+//    compile ('com.localz.spotz.sdk:spotz-sdk-android:3.0.0@jar') {
+//        transitive = true
+//    }
+
+    compile 'com.localz.spotz.sdk:spotz-api:0.2.6'
+    compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.4@jar'
+    compile 'com.localz.spotz.sdk:spotz-sdk-android:3.0.0@jar'
+    compile 'com.google.code.gson:gson:2.3'
+    compile 'com.google.http-client:google-http-client:1.20.0'
+    compile 'com.google.http-client:google-http-client-gson:1.20.0'
+    compile 'com.j256.ormlite:ormlite-android:4.48'
+    compile 'io.reactivex:rxjava:1.0.10'
+    compile 'io.reactivex:rxandroid:0.24.0'
+    compile 'io.reactivex:rxjava-async-util:0.21.0'
+    compile 'com.google.android.gms:play-services:6.5.+'
 }

@@ -10,11 +10,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,29 +22,26 @@ import com.localz.spotz.sdk.Spotz;
 import com.localz.spotz.sdk.app.model.SpotzMap;
 import com.localz.spotz.sdk.app.widgets.CustomAnimation;
 import com.localz.spotz.sdk.listeners.InitializationListenerAdapter;
-//import com.localz.spotz.sdk.listeners.RangingListener;
 import com.localz.spotz.sdk.models.Spot;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
 public class MainActivity extends Activity {
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final String SPOT_ENTERED_OR_EXITED = ".SPOT_ENTERED_OR_EXITED";
-    private static final int REQUEST_BLUETOOTH = 100;
 
     private static final int REQUEST_ENABLE_BT = 13;
 
-    private final long activeInterval = 20000;
-    private final long activeDuration = 1000;
+    private final long activeInterval = 10000;
+    private final long activeDuration = 3000;
 
     private final long passiveInterval = 60000;
-    private final long passiveDuration = 1000;
+    private final long passiveDuration = 5000;
 
     // This BroadcastReceiver is to be notified when device either enter or exit
     // spot.
@@ -55,8 +52,8 @@ public class MainActivity extends Activity {
     // Tracks spot ids of the spots that device is in
     private SpotzMap inSpotMap;
     TextView nameOfSpotText;
-//    TextView rangingDistanceTextView;
-    TextView startStop;
+    //    TextView rangingDistanceTextView;
+    Button startStop;
 
     private ListView activeSpotsListView;
     private SpotListAdapter spotListAdapter;
@@ -74,7 +71,7 @@ public class MainActivity extends Activity {
 
 //        rangingDistanceTextView = (TextView) findViewById(R.id.activity_spot_ranging_distance);
         nameOfSpotText = (TextView) findViewById(R.id.activity_range_text);
-        startStop = (TextView) findViewById(R.id.start_stop);
+        startStop = (Button) findViewById(R.id.start_stop);
         activeSpotsListView = (ListView) findViewById(R.id.spots_list_view);
         spotListAdapter = new SpotListAdapter();
         activeSpotsListView.setAdapter(spotListAdapter);
@@ -117,26 +114,27 @@ public class MainActivity extends Activity {
     private void initialiseSpotzSdk(final boolean startScanning) {
         // Let's initialize the spotz sdk so we can start receiving callbacks
         // for any spotz we find!
+        nameOfSpotText.setText("Initialising");
+        nameOfSpotText.setVisibility(View.VISIBLE);
+        startStop.setVisibility(View.INVISIBLE);
         Spotz.getInstance().initialize(this,
-//                "3TA3JdAAON7FO51a",          // Your application ID goes here
-                "YYPNOQwDSelIip7X",          // Your application ID goes here
-                "UIr7fcmS1OurDfUXFssPuOOr49f370xsOSuB8sDq",              // Your client key goes here
-//                "pKrsYoGHT0cc2mF6Qal9uWMmmRelPpLgamSBiEtz",              // Your client key goes here
+//                "3TA3JdAAON7FO51a",          // Your application ID goes here - LOCAL
+                "YfOpPKNy5mdAyEuo",          // Your application ID goes here - PROD
+//                "YYPNOQwDSelIip7X",          // Your application ID goes here - DEV
+//                "UIr7fcmS1OurDfUXFssPuOOr49f370xsOSuB8sDq",              // Your client key goes here - DEV
+                "x8rjSKDqUxB24hIIAhzjbgHjkYCCcuyewgSBj5i3",              // Your client key goes here - PROD
+//                "pKrsYoGHT0cc2mF6Qal9uWMmmRelPpLgamSBiEtz",              // Your client key goes here - LOCAL
                 new InitializationListenerAdapter() {
                     @Override
                     public void onInitialized() {
 
-//                        if (getString(R.string.message_initializing)
-//                                .equalsIgnoreCase(nameOfSpotText.getText().toString())) {
-//                            Spotz.getInstance().startScanningForSpotz(
-//                                    MainActivity.this, activeInterval, activeDuration);
-//                        }
                         if (startScanning) {
                             startActiveScanning();
-                            startStop.setVisibility(View.VISIBLE);
-                            startStop.setText(getString(R.string.stop_scanning));
                             CustomAnimation.startWaveAnimation(findViewById(R.id.wave));
+                        } else {
+                            startStop.setText(getString(R.string.start_scanning));
                         }
+                        startStop.setVisibility(View.VISIBLE);
                         adjustUI();
                     }
 
@@ -153,24 +151,21 @@ public class MainActivity extends Activity {
                             }
                         });
                     }
-                }, startScanning);
+                }, false);
     }
 
     private void startActiveScanning() {
         if (Spotz.getInstance().isInitialized(MainActivity.this)) {
             Log.d(TAG, "startActiveScanning");
-            Spotz.getInstance().stopScanningForSpotz(MainActivity.this);
-            rangingHandler.removeCallbacks(rangingRunnable);
-            rangeIfRequired();
+            Spotz.getInstance().startForegroundScanning(MainActivity.this, activeInterval, activeDuration);
         }
     }
 
     private void startPassiveScanning() {
         if (Spotz.getInstance().isInitialized(MainActivity.this)) {
             Log.d(TAG, "startPassiveScanning");
-            rangingHandler.removeCallbacks(rangingRunnable);
             scanning = false;
-            Spotz.getInstance().startScanningForSpotz(MainActivity.this, Spotz.ScanMode.EAGER);
+            Spotz.getInstance().startBackgroundScanning(MainActivity.this, passiveInterval, passiveDuration);
         }
     }
 
@@ -178,17 +173,15 @@ public class MainActivity extends Activity {
         if (Spotz.getInstance().isInitialized(MainActivity.this)) {
             if (scanning) {
                 Log.d(TAG, "stopScanning");
-                rangingHandler.removeCallbacks(rangingRunnable);
                 scanning = false;
-                Spotz.getInstance().stopScanningForSpotz(MainActivity.this);
             }
+            Spotz.getInstance().stopScanningForSpotz(MainActivity.this);
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        rangingRunnable.run();
 
         adjustUI();
 
@@ -201,22 +194,18 @@ public class MainActivity extends Activity {
         boolean isScanningForSpotz = Spotz.getInstance().isScanningForSpotz(MainActivity.this);
         if (isScanningForSpotz) {
             startStop.setText(getString(R.string.stop_scanning));
-            Spotz.getInstance().stopScanningForSpotz(this);
-            rangeIfRequired();
+            startActiveScanning();
         } else {
             new SpotzMap(this).clear();
             startStop.setText(getString(R.string.start_scanning));
             scanning = false;
-            if (!Spotz.getInstance().isInitialized(MainActivity.this)) {
-                init();
-            }
+            init();
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        rangingHandler.removeCallbacks(rangingRunnable);
 
         if (enterOrExitSpotBroadcastReceiver != null) {
             try {
@@ -247,9 +236,9 @@ public class MainActivity extends Activity {
                     setInRange(null);
 //            rangingDistanceTextView.setVisibility(View.GONE);
                 } else {
-                    if (Spotz.getInstance().isScanningForSpotz(MainActivity.this)) {
+                    if (scanning || Spotz.getInstance().isScanningForSpotz(MainActivity.this)) {
 //            rangingDistanceTextView.setVisibility(View.VISIBLE);
-                        nameOfSpotText.setText("Out of range");
+                        nameOfSpotText.setText("Scanning");
                         nameOfSpotText.setVisibility(View.VISIBLE);
                     } else if (Spotz.getInstance().isInitialized(MainActivity.this)) {
                         nameOfSpotText.setText("Initialised");
@@ -297,7 +286,7 @@ public class MainActivity extends Activity {
                 unregisterReceiver(enterOrExitSpotBroadcastReceiver);
                 enterOrExitSpotBroadcastReceiver = null;
             }
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
@@ -367,53 +356,6 @@ public class MainActivity extends Activity {
 //        }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == REQUEST_BLUETOOTH) {
-//            BluetoothAdapter bluetoothAdapter = BluetoothAdapter
-//                    .getDefaultAdapter();
-//            // For this example app, let's try to ensure bluetooth is switched
-//            // on
-//            if (bluetoothAdapter.isEnabled()) {
-//                initialiseSpotzSdk(false);
-//            } else {
-//                showBluetoothNotEnabledDialog();
-//            }
-//        }
-//    }
-
-//    private void showBluetoothNotEnabledDialog() {
-//        new AlertDialog.Builder(this)
-//                .setTitle("Bluetooth not enabled")
-//                .setMessage(R.string.message_bluetooth_not_enabled)
-//                .setCancelable(false)
-//                .setPositiveButton("Enable",
-//                        new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(
-//                                    DialogInterface dialogInterface, int i) {
-//                                Intent intentOpenBluetoothSettings = new Intent();
-//                                intentOpenBluetoothSettings
-//                                        .setAction(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
-//                                startActivityForResult(
-//                                        intentOpenBluetoothSettings,
-//                                        REQUEST_BLUETOOTH);
-//                                dialogInterface.dismiss();
-//                            }
-//                        })
-//                .setNegativeButton("Close",
-//                        new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(
-//                                    DialogInterface dialogInterface, int i) {
-//                                dialogInterface.dismiss();
-//                                finish();
-//                            }
-//                        }).show();
-//    }
-//
     private void createErrorDialogInitialising() {
         new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Unable to initialize")
@@ -440,53 +382,6 @@ public class MainActivity extends Activity {
         public void onReceive(Context arg0, Intent arg1) {
             adjustUI();
             abortBroadcast();
-        }
-    }
-
-    Handler rangingHandler = new Handler();
-    Runnable rangingRunnable = new Runnable() {
-        public void run() {
-            rangeIfRequired();
-        }
-    };
-
-    public void rangeIfRequired() {
-        // check shared preferences
-        if (Spotz.getInstance().isInitialized(MainActivity.this)) {
-            scanning = true;
-            Spotz.getInstance().quickScan(MainActivity.this, 1000);
-//            if (Spotz.getInstance().isAnySpotzToRange(MainActivity.this)) {
-//                clearRangingDistances();
-//                Spotz.getInstance().range(MainActivity.this,
-//                        new RangingListener() {
-//
-//                            @Override
-//                            public void onRangeIterationCompleted(
-//                                    HashMap<String, Double> spotIdsAndDistances) {
-//                                // spotIdsAndDistances is <spotId, distance>
-//                                // pair, which shows spotId and distance to the
-//                                // closest beacon in the spot
-//                                // Populated
-//                                Set<String> spotIds = spotIdsAndDistances
-//                                        .keySet();
-//                                for (String spotId : spotIds) {
-//                                    Spot spotOfRangingBeacon = inSpotMap
-//                                            .get(spotId);
-//                                    if (spotOfRangingBeacon != null) {
-//                                        spotOfRangingBeacon.closestBeaconDistance = spotIdsAndDistances
-//                                                .get(spotId);
-//                                        // this will write to storage
-//                                        inSpotMap.put(spotId,
-//                                                spotOfRangingBeacon);
-//                                    }
-//                                }
-//                                adjustUI();
-//                            }
-//                        });
-//            } else {
-//                adjustUI();
-//            }
-            rangingHandler.postDelayed(rangingRunnable, 5000);
         }
     }
 
@@ -517,10 +412,15 @@ public class MainActivity extends Activity {
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        MainActivity.this.initialiseSpotzSdk(false);
+                        if (!Spotz.getInstance().isInitialized(MainActivity.this)) {
+                            MainActivity.this.initialiseSpotzSdk(false);
+                        } else {
+                            adjustUI();
+                        }
                     }
                 });
-            } else {
+                builder.show();
+            } else if (!Spotz.getInstance().isInitialized(MainActivity.this)) {
                 initialiseSpotzSdk(false);
             }
         } else {

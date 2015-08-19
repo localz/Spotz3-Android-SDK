@@ -32,8 +32,7 @@ public class OnSpotBeaconDistanceUpdatedBroadcastReceiver extends BroadcastRecei
         Log.d(TAG, "You have just exited spotz " + spot.name);
         Intent notificationIntent = new Intent(context, MainActivity.class);
 
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(

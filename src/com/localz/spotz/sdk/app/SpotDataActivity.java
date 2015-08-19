@@ -63,8 +63,8 @@ public class SpotDataActivity extends Activity {
             }
             typeMap.put(i++, TYPE_HEADING);
             dataList.add("Payload");
-            if (spot.payload != null) {
-                for (Map.Entry<String, Object> entry : spot.payload.entrySet()) {
+            if (spot.metadata != null) {
+                for (Map.Entry<String, Object> entry : spot.metadata.entrySet()) {
                     typeMap.put(i++, TYPE_PAYLOAD);
                     dataList.add(entry);
                 }

@@ -43,7 +43,7 @@ public class OnEnteredSpotBroadcastReceiver extends BroadcastReceiver {
         notificationIntent.putExtra(OnShowNotificationBroadcastReceiver.NOTIFICATION_TITLE, "Entered Spotz");
         notificationIntent.putExtra(OnShowNotificationBroadcastReceiver.NOTIFICATION_TEXT, "You have just entered spotz " + spot.name);
         notificationIntent.putExtra(OnShowNotificationBroadcastReceiver.NOTIFICATION_ICON, R.drawable.ic_launcher);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         context.sendOrderedBroadcast(notificationIntent, null);
 

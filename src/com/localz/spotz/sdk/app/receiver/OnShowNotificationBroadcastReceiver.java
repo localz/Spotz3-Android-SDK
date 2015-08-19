@@ -39,7 +39,7 @@ public class OnShowNotificationBroadcastReceiver extends BroadcastReceiver {
 //            notificationIntent.putExtra(SpotzListActivity.SPOT_ID, intent.getStringExtra(SpotzListActivity.SPOT_ID));
 //            notificationIntent.putExtra(SpotzListActivity.EVENT, intent.getStringExtra(SpotzListActivity.EVENT));
 //            notificationIntent.putExtra(SpotzListActivity.ACTION, intent.getStringExtra(SpotzListActivity.ACTION));
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
 
             PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);

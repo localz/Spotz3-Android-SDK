@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import android.content.Context;
@@ -33,17 +34,19 @@ public class SpotzMap extends ConcurrentHashMap<String, Spot> {
 	
 	public SpotzMap(Context context) {
 		super();
-		file = new File(context.getFilesDir(), SPOTZ_MAP_FILE);
 
 		ObjectInputStream inputStream = null;
 		try {
-			if (!file.exists()) {
+			if (!getFile(context).exists()) {
 				Log.d("SpotzMap", "SpotzMap file not exists - trying to create");
-				file.createNewFile();
+				getFile(context).createNewFile();
 			}
-			inputStream = new ObjectInputStream(new FileInputStream(file));
-			ConcurrentHashMap<String, Spot> spotzFromFile = (ConcurrentHashMap<String, Spot>) inputStream.readObject();
-			this.putAll(spotzFromFile);
+			inputStream = new ObjectInputStream(new FileInputStream(getFile(context)));
+			Map<String, Spot> spotzFromFile = (Map<String, Spot>) inputStream.readObject();
+			if (spotzFromFile != null && !spotzFromFile.isEmpty()) {
+				super.putAll(spotzFromFile);
+				writeToFile();
+			}
 		} catch (OptionalDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -91,8 +94,10 @@ public class SpotzMap extends ConcurrentHashMap<String, Spot> {
 	private void writeToFile() {
 		ObjectOutputStream outputStream = null;
 		try {
-			outputStream = new ObjectOutputStream(new FileOutputStream(file));
-			outputStream.writeObject((ConcurrentHashMap<String, Spot>) this);
+			outputStream = new ObjectOutputStream(new FileOutputStream(getFile(null)));
+			HashMap<String, Spot> copyMap = new HashMap<>(this.size());
+			copyMap.putAll(this);
+			outputStream.writeObject(copyMap);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -108,5 +113,12 @@ public class SpotzMap extends ConcurrentHashMap<String, Spot> {
 				}
 			}
 		}
+	}
+
+	private File getFile(Context context) {
+		if (file == null && context != null) {
+			file = new File(context.getFilesDir(), SPOTZ_MAP_FILE);
+		}
+		return file;
 	}
 }
