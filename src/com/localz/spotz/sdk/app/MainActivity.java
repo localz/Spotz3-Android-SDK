@@ -191,6 +191,7 @@ public class MainActivity extends Activity {
             intentFilter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
             registerReceiver(enterOrExitSpotBroadcastReceiver, intentFilter);
         }
+        Spotz.getInstance().setDebug(true);
         boolean isScanningForSpotz = Spotz.getInstance().isScanningForSpotz(MainActivity.this);
         if (isScanningForSpotz) {
             startStop.setText(getString(R.string.stop_scanning));

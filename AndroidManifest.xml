@@ -56,31 +56,31 @@
 
         <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFoundReceiver" >
             <intent-filter>
-                <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FOUND" />
+                <action android:name="com.localz.spotz.sdk.app.LOCALZ_BLE_SCAN_FOUND" />
             </intent-filter>
         </receiver>
 
         <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFinishedReceiver" >
             <intent-filter>
-                <action android:name="com.localz.spotz.sdk.LOCALZ_BLE_SCAN_FINISH" />
+                <action android:name="com.localz.spotz.sdk.app.LOCALZ_BLE_SCAN_FINISH" />
             </intent-filter>
         </receiver>
 
         <receiver android:name="com.localz.spotz.sdk.OnNfcFoundReceiver" >
             <intent-filter>
-                <action android:name="com.localz.spotz.sdk.LOCALZ_NFC_ENTER" />
+                <action android:name="com.localz.spotz.sdk.app.LOCALZ_NFC_ENTER" />
             </intent-filter>
         </receiver>
 
         <receiver android:name="com.localz.spotz.sdk.OnGeofenceEnterBroadcastReceiver" >
             <intent-filter>
-                <action android:name="com.localz.spotz.sdk.LOCALZ_GEOFENCE_TRANSITION_ENTER" />
+                <action android:name="com.localz.spotz.sdk.app.LOCALZ_GEOFENCE_TRANSITION_ENTER" />
             </intent-filter>
         </receiver>
 
         <receiver android:name="com.localz.spotz.sdk.OnGeofenceExitBroadcastReceiver" >
             <intent-filter>
-                <action android:name="com.localz.spotz.sdk.LOCALZ_GEOFENCE_TRANSITION_EXIT" />
+                <action android:name="com.localz.spotz.sdk.app.LOCALZ_GEOFENCE_TRANSITION_EXIT" />
             </intent-filter>
         </receiver>
         
