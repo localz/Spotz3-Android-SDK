@@ -8,21 +8,7 @@ The Spotz Android SDK allows your Android app to detect when it is in range of y
 Changelog
 =========
 
-**3.0.0**	
-* Added running on background support.  
-* Added ranging support.  
-
-**2.0.2**	
-* Added geofence support.	
-* Added monitoring of subset of spotz.  
-* Added integration with 3rd party systems support.
-*  
- 
-**1.3.1**	
-* Fixed triggering on Spotz that did not exist for the application.
-*
-
-**1.3.0**	
+**1.0.0**
 * Initial public release.
 *
 

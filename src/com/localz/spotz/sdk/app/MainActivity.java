@@ -130,12 +130,8 @@ public class MainActivity extends Activity {
         statusText.setVisibility(View.VISIBLE);
         startStop.setVisibility(View.INVISIBLE);
         Spotz.getInstance().initialize(this,
-//                "K88DICKfmjTQpwSz",          // Your application ID goes here - LOCAL
-//                "YfOpPKNy5mdAyEuo",          // Your application ID goes here - PROD
-                "YYPNOQwDSelIip7X",          // Your application ID goes here - DEV
-                "UIr7fcmS1OurDfUXFssPuOOr49f370xsOSuB8sDq",              // Your client key goes here - DEV
-//                "x8rjSKDqUxB24hIIAhzjbgHjkYCCcuyewgSBj5i3",              // Your client key goes here - PROD
-//                "c3oRPYkSp9S7MWmK5LDfl3W04O3oHbg2x9GP6JZC",              // Your client key goes here - LOCAL
+                "", // Your application ID goes here
+                "", // Your client key goes here
                 new InitializationListenerAdapter() {
                     @Override
                     public void onInitialized() {
