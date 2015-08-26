@@ -1,25 +1,24 @@
-<a href="http://www.localz.co/"><img alt="Localz logo" align="right" width="50" height="50" src="http://www.localz.co/assets/images/logo-round.png" /></a> Spotz Android SDK
+<a href="http://www.localz.co/"><img alt="Localz logo" align="right" src="http://localz.com/wp-content/uploads/2015/02/localz_logo.png" /></a> Spotz Android SDK
 =================
 
-[Spotz](http://spotz.localz.co/) is a user engagement platform that utilizes Bluetooth Low Energy, GPS and NFC. You can create any 'Spot' you want - an exhibit, a room, an event, or even an entire street.
+[Spotz](https://spotz.localz.io/) is a user engagement platform that utilises Bluetooth Low Energy, GPS and NFC. You can create any 'Spot' you want - an exhibit, a room, an event, or even an entire street.
 
-The Spotz Android SDK allows your Android app to detect when it is in range of your Spotz and receive payload data - e.g. detailed information about an exhibit, promotional offers, media, it can be anything!
+The Spotz3 Android SDK allows your Android app to detect when it is in range of your spots and receive payload data - e.g. detailed information about an exhibit, promotional offers, media, it can be anything!
 
 Changelog
 =========
 
 **1.0.0**
 * Initial public release.
-*
 
 What does the sample app do?
 ============================
 
-The app simply tells you if you are in the proximity of a Spot. 
+The app simply tells you if you are in the proximity of a spot.
 
-If you are in the proximity of a Spot, you will receive a notification. If you open the app, you will also be able to see any data associated with that Spot. Further, if you define a Spot as "ranging", you will also see the distance to the closest beacon in the spot.
+If you are in the proximity of a spot, you will receive a notification. If you open the app, you will also be able to see any data associated with that Spot. Further, if you define a spot as "ranging", you will also see the distance to the closest beacon in the spot.
 
-Monitoring will continue even if you exit the app, even when a phone is rebooted.
+Monitoring will continue even if you exit the app or reboot your phone.
 
 How to run the sample app
 =========================
@@ -28,7 +27,7 @@ The sample app requires devices running Android 2.3.3 or newer. However, Bluetoo
 
   1. Clone the repository:
   
-        git clone git@github.com:localz/spotz-sdk-android.git
+        git clone git@github.com:localz/Spotz3-Android-SDK.git
 
   2. Import the project:
     
@@ -38,15 +37,15 @@ The sample app requires devices running Android 2.3.3 or newer. However, Bluetoo
     
     *The project targets Android 5.1 (API level 22) so check you have this version in your Android SDK.*
     
-  3. Define a Spot using the [Spotz console](https://spotz.localz.io). Don't forget to add a beacon to your Spot. If you don't have a real beacon, don't worry, you can use the Beacon Toolkit app:
+  3. Define a spot using the [Spotz console](https://spotz.localz.io). Don't forget to add a beacon to your Spot. If you don't have a real beacon, don't worry, you can use the Beacon Toolkit app:
   
     <a href="https://itunes.apple.com/us/app/beacon-toolkit/id838735159?ls=1&mt=8">
     <img alt="Beacon Toolkit on App Store" width="100" height="33"
-         src="http://localz.co/blog/wp-content/uploads/2014/03/app-store-300x102.jpg" />
+         src="http://localz.wpengine.com/wp-content/uploads/2014/03/app-store-300x102.jpg" />
     </a>    
     As Android L now supports peripheral, we will have version of Android Beacon Toolkit sometime soon!
 
-  4. Insert your Spotz application ID and client key into MainActivity.java - these can be found in the Spotz console under your application. Be sure to use the *android* client key:
+  4. Insert your Spotz Application ID and Application Key into MainActivity.java - these can be found in the Spotz console under your application. Be sure to use the *android* client key:
 
         ...
         Spotz.getInstance().initialize(this,
@@ -152,7 +151,7 @@ How to use the SDK
 
 **Starting with release 3.0.0 of the SDK, devices that do not support Bluetooth Low Energy (generally Android 4.3 API level 18 or newer) are still able to make use of the Spotz SDK**. But only Geofence and NFC spots can be triggered.
 
-There are only 3 actions to implement - **initialize, scan, and listen!**
+There are only 3 actions to implement - **initialize**, **scan**, and **listen**!
 
 *Refer to the sample app code for a working implementation of the SDK.*
 
@@ -178,38 +177,42 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
         <service android:name="com.localz.proximity.ble.services.BleHeartbeat" />
         <service android:name="com.localz.spotz.sdk.geofence.GeofenceTransitionsIntentService"/>  
         
-  3. Define the following broadcast receivers in your AndroidManifest.xml:  
+  3. Define the following broadcast receivers in your AndroidManifest.xml:
+
     3.1.These broadcast receivers are used internally in Spotz SDK. They must be registered in AndroidManifest file (make sure you use your app's package name):
     
         <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFoundReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="**{your.app.package.name}**.LOCALZ_BLE_SCAN_FOUND" />
+                <action android:name="*your.app.package.name*.LOCALZ_BLE_SCAN_FOUND" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFinishedReceiver"  android:exported="false">
+        <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFinishedReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="**{your.app.package.name}**.LOCALZ_BLE_SCAN_FINISH" />
+                <action android:name="*your.app.package.name*.LOCALZ_BLE_SCAN_FINISH" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.localz.spotz.sdk.OnGeofenceEnterBroadcastReceiver"  android:exported="false">
+
+        <receiver android:name="com.localz.spotz.sdk.OnGeofenceEnterBroadcastReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="**{your.app.package.name}**.LOCALZ_GEOFENCE_TRANSITION_ENTER" />
+                <action android:name="*your.app.package.name*.LOCALZ_GEOFENCE_TRANSITION_ENTER" />
             </intent-filter>
         </receiver>
+
         <receiver android:name="com.localz.spotz.sdk.OnGeofenceExitBroadcastReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="**{your.app.package.name}**.LOCALZ_GEOFENCE_TRANSITION_EXIT" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name="com.localz.spotz.sdk.OnNfcFoundReceiver" android:exported="false">
-            <intent-filter>
-                <action android:name="**{your.app.package.name}**.LOCALZ_NFC_ENTER" />
+                <action android:name="*your.app.package.name*.LOCALZ_GEOFENCE_TRANSITION_EXIT" />
             </intent-filter>
         </receiver>
 
-    3.2.These broadcast receivers must be implemented in the application (assuming com.foo.app is a package name of your application com.foo.app.receivers is a java package of your receivers).
-        They will be invoked if a device enters or exits a Spot.
+        <receiver android:name="com.localz.spotz.sdk.OnNfcFoundReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="*your.app.package.name*.LOCALZ_NFC_ENTER" />
+            </intent-filter>
+        </receiver>
+
+    3.2.These broadcast receivers must be implemented in the application (assuming *com.foo.app* is a package name of your application and *com.foo.app.receivers* is a java package of your receivers).
+        They will be invoked if a device enters or exits a spot.
         Example implementation can be found in this sample application. A typical implementation will create a notification.
         
         <receiver android:name="com.foo.app.receivers.OnEnteredSpotBroadcastReceiver" android:exported="false" >
@@ -230,7 +233,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
             </intent-filter>
         </receiver>
 
-        Additionally, your app can register for for events triggered when a device enters or exits a Site.
+        *Additionally, your app can register for events triggered when a device enters or exits a Site.*
 
         <receiver android:name="com.foo.app.receivers.OnEnteredSiteBroadcastReceiver" android:exported="false" >
             <intent-filter>
@@ -244,7 +247,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
             </intent-filter>
         </receiver>
         
-    3.3.This receiver is only required if you integrated Spotz platform with a 3rd party system. The receiver will be invoked when a reply is received from a 3rd party system. See section "Integration with 3rd party systems" below:
+    3.3.This receiver is only required if you integrated your Spotz Application with a 3rd party system. The receiver will be invoked when a reply is received from a 3rd party system. See section "Integration with 3rd party systems" below:
     
         <receiver android:name="com.foo.app.receivers.OnIntegrationRespondedBroadcastReceiver" android:exported="false">
             <intent-filter>
@@ -260,7 +263,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
             </intent-filter>  
         </receiver>
         
-  4. Initialize the SDK by providing your application ID and client key (as shown on Spotz console):
+  4. Initialize the SDK by providing your application ID and application key (as shown on Spotz console):
 
     4.1.You can provide optional spot tags and attributes to limit the spots you are interested in:
 
@@ -272,7 +275,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
 
         Spotz.getInstance().initialize(context, // Your context
                 "your-application-id",          // Your application ID goes here
-                "your-client-key",              // Your client key goes here
+                "your-application-key",         // Your application key goes here
                 new InitializationListenerAdapter() {
                     @Override
                     public void onInitialized() {
@@ -282,15 +285,15 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
                 true    // you can set this flag to 'true' and the SDK will start scanning automatically after initialisation
         );
 
-The SDK will communicate with a Spotz server, authenticate, and register a device. Then it will download spots that you registered on the [Spotz console](https://spotz.localz.io). The SDK will handle any changes you've made to your server configuration.
+The SDK will communicate with Spotz servers, authenticate, and register a device. Then it will download spots that you registered on the [Spotz console](https://spotz.localz.io). The SDK will handle any changes you've made to your server configuration.
   
 Your project is now ready to start using the Spotz SDK!
 
 ---
 
-###Scan for Spotz
+###Scanning for Spots
 
-  To start scanning for Spotz, use one of these:
+  To start scanning for spots, use one of these methods:
   
         // Start scanning for spots in the foreground. These calls should only be used when the app is in the foreground.
         // When any 'start***Scanning' method is called - SDK will start to continuously scan for Geofences and NFC triggers.
@@ -325,7 +328,7 @@ Your project is now ready to start using the Spotz SDK!
   
   The SDK will scan for beacons while your app is in the background.
   
-  To stop scanning for Spotz:
+  To stop scanning for spots:
   
         Spotz.getInstance().stopScanningBeacons(context);
         
@@ -394,17 +397,25 @@ Your project is now ready to start using the Spotz SDK!
 Advanced Features
 =================
 #### Restarting monitoring when a phone reboots
+
 Spotz SDK supports restarting of monitoring for spots after a phone was rebooted. Just declare a Broadcast Receiver with an intent filter: "android.intent.action.BOOT_COMPLETED" as described in section 3.4. SDK will take care of everything else!
 
 #### Ranging
-Ranging is an iOS term. There are two spot modes that app can be interested in:
-1. Monitoring - SDK will look for spotz with regular, reasonably infrequent interval (in minutes) and will notify application when a spot is detected. Monitoring does NOT run in your application process and your application is notified using Broadcast Receivers. Monitoring is reasonably inexpensive in terms of battery and CPU usage.
-2. Ranging - SDK will scan with the aim of getting the distance to beacons in a spot. Ranging runs in your process and has to be scheduled by your process. Scheduling is typically very frequent (e.g. every 1 sec). Ranging is very expensive, hence consider carefully when you range and never forget to stop ranging.
-In Spotz Android SDK ranging is implemented as following:
-1. You define a beacon on Spotz Console as ranging (Immediate 0-1 meters, Near 0-5 meters, Far 0-50 meters). SDK monitors for spots. When a ranging beacon is detected, SDK will calculate the distance and will only notify that you are in range of a Spot if the distance is less than you specify on the console.
-2. Once you are in range, if you open the app, you will need to schedule ranging, which can be achieve in many different ways. In the sample application this is done by using 'startForegroundScanning' with a 1 second interval.
 
- **Important!** Start scanning in onResume() and stop onPause() to avoid unnecessary battery drain.  
+Ranging is an iOS term. There are two spot modes that app can be interested in:
+
+  1. Monitoring - SDK will look for spotz with regular, reasonably infrequent interval (in minutes) and will notify application when a spot is detected. Monitoring does NOT run in your application process and your application is notified using Broadcast Receivers. Monitoring is reasonably inexpensive in terms of battery and CPU usage.
+
+  2. Ranging - SDK will scan with the aim of getting the distance to beacons in a spot. Ranging runs in your process and has to be scheduled by your process. Scheduling is typically very frequent (e.g. every 1 sec). Ranging is very expensive, hence consider carefully when you range and never forget to stop ranging.
+
+In Spotz Android SDK ranging is implemented as following:
+
+  1. You define a beacon on Spotz Console as ranging (Immediate 0-1 meters, Near 0-5 meters, Far 0-50 meters). SDK monitors for spots. When a ranging beacon is detected, SDK will calculate the distance and will only notify that you are in range of a Spot if the distance is less than you specify on the console.
+
+  2. Once you are in range, if you open the app, you will need to schedule ranging, which can be achieve in many different ways. In the sample application this is done by using 'startForegroundScanning' with a 1 second interval.
+
+ **Important!** Start scanning in onResume() and stop onPause() to avoid unnecessary battery drain.
+
 Note: calculation of distance is based on rssi and txPower values as broadcasted by a beacon. Distance is not exactly scientifically accurate. More accurate value could be derived by averaging distance over number of ranging samples. Spotz SDK uses the following formula for distance:
 
 	double ratio = rssi * 1.0 / tx;
@@ -414,9 +425,9 @@ Note: calculation of distance is based on rssi and txPower values as broadcasted
 		distance = (float) ((0.42093) * Math.pow(ratio, 6.9476) + 0.54992);
 	}
 
-#### Monitoring a subset of spotz
+#### Monitoring a subset of spots
 
-You might want to monitor not all Spotz but subset of spotz in your application. In this case, on [Spotz console](https://spotz.localz.io) for the spotz that you want to monitor, you can set an attribute (or few attributes) with the value. Later when initialising Spotz android SDK, you can pass attribute(s) name and value(s) to only monitor for the matching spotz. 
+You might not want to monitor all spots, but a subset of spots in your application. In this case, on [Spotz console](https://spotz.localz.io) for the spots that you want to monitor, you can define an attribute (or attributes). Later when initialising Spotz Android SDK, you can provide a map of attribute(s) in order to monitor for matching spots only.
 In this case, SDK initialization will be similar to the following:  
 
 	Map<String, String> attributes = new HashMap<String, String>();
@@ -425,7 +436,7 @@ In this case, SDK initialization will be similar to the following:
 	Spotz.getInstance().setSpotAttributes(attributes);
 	Spotz.getInstance().initialize(context, // Your context
 		"your-application-id",          // Your application ID goes here
-		"your-client-key",              // Your client key goes here
+		"your-application-key",         // Your application key goes here
 		new InitializationListenerAdapter() {
 			@Override
 			public void onInitialized() {
@@ -441,7 +452,7 @@ In this case, SDK initialization will be similar to the following:
 
 	Spotz.getInstance().initialize(context, // Your context
 		"your-application-id",          // Your application ID goes here
-		"your-client-key",              // Your client key goes here
+		"your-application-key",         // Your application key goes here
 		new InitializationListenerAdapter() {
 			@Override
 			public void onInitialized() {

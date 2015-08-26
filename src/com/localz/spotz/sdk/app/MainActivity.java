@@ -130,8 +130,8 @@ public class MainActivity extends Activity {
         statusText.setVisibility(View.VISIBLE);
         startStop.setVisibility(View.INVISIBLE);
         Spotz.getInstance().initialize(this,
-                "", // Your application ID goes here
-                "", // Your client key goes here
+                "your-application-id",          // Your application ID goes here
+                "your-application-key",         // Your application key goes here
                 new InitializationListenerAdapter() {
                     @Override
                     public void onInitialized() {
