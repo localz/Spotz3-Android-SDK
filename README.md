@@ -471,7 +471,7 @@ In this case, SDK initialization will be similar to the following:
 Contribution
 ============
 
-For bugs, feature requests, or other questions, [file an issue](https://github.com/localz/spotz-sdk-android/issues/new).
+For bugs, feature requests, or other questions, [file an issue](https://github.com/localz/Spotz3-Android-SDK/issues/new).
 
 License
 =======
