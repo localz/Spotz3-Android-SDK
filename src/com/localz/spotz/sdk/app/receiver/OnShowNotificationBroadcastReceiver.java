@@ -1,6 +1,5 @@
 package com.localz.spotz.sdk.app.receiver;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -9,11 +8,15 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.localz.spotz.sdk.app.MainActivity;
 import com.localz.spotz.sdk.app.R;
 
+/**
+ * Displays Spot data in the notification bar when the app is running in the background.
+ */
 public class OnShowNotificationBroadcastReceiver extends BroadcastReceiver {
 
     private static final String TAG = OnShowNotificationBroadcastReceiver.class.getSimpleName();
@@ -30,24 +33,17 @@ public class OnShowNotificationBroadcastReceiver extends BroadcastReceiver {
         int id = intent.getIntExtra(NOTIFICATION_ID, 1);
         int icon = intent.getIntExtra(NOTIFICATION_ICON, R.drawable.ic_launcher);
 
-//        if (BuildConfig.DEBUG) {
         Log.d(TAG, "onReceive title=" + title);
-//        }
 
         if (title != null && text != null) {
             Intent notificationIntent = new Intent(context, MainActivity.class);
-//            notificationIntent.putExtra(SpotzListActivity.SPOT_ID, intent.getStringExtra(SpotzListActivity.SPOT_ID));
-//            notificationIntent.putExtra(SpotzListActivity.EVENT, intent.getStringExtra(SpotzListActivity.EVENT));
-//            notificationIntent.putExtra(SpotzListActivity.ACTION, intent.getStringExtra(SpotzListActivity.ACTION));
-//            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
 
             PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-            Notification.Builder mBuilder =
-                    new Notification.Builder(context)
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(context)
                             .setSmallIcon(icon)
                             .setContentTitle(title)
                             .setContentText(text)

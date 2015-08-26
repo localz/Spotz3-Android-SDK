@@ -1,8 +1,5 @@
 package com.localz.spotz.sdk.app.receiver;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,49 +28,19 @@ public class OnEnteredSpotBroadcastReceiver extends BroadcastReceiver {
         Spot spot = (Spot) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
 
         // Create notification 
-        Log.d(TAG, "You have just entered spotz " + spot.name);
+        Log.d(TAG, "You have just entered a spot " + spot.name);
 
         new SpotzMap(context).put(spot.spotId, spot);
 
-//        Intent notificationIntent = new Intent(context, MainActivity.class);
         Intent notificationIntent = new Intent(context.getPackageName() + MainActivity.SPOT_ENTERED_OR_EXITED);
         notificationIntent.putExtra("SPOT_ID", spot.spotId);
         notificationIntent.putExtra("EVENT", "SPOT_ENTER");
         notificationIntent.putExtra(OnShowNotificationBroadcastReceiver.NOTIFICATION_ID, NOTIFICATION_ID);
-        notificationIntent.putExtra(OnShowNotificationBroadcastReceiver.NOTIFICATION_TITLE, "Entered Spotz");
-        notificationIntent.putExtra(OnShowNotificationBroadcastReceiver.NOTIFICATION_TEXT, "You have just entered spotz " + spot.name);
+        notificationIntent.putExtra(OnShowNotificationBroadcastReceiver.NOTIFICATION_TITLE, "Entered a Spot");
+        notificationIntent.putExtra(OnShowNotificationBroadcastReceiver.NOTIFICATION_TEXT, "You have just entered a spot \"" + spot.name + "\"");
         notificationIntent.putExtra(OnShowNotificationBroadcastReceiver.NOTIFICATION_ICON, R.drawable.ic_launcher);
-//        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
+        // send an ordered broadcast, so that if the app is in the foreground it will show spot data, otherwise it will be displayed as a notification
         context.sendOrderedBroadcast(notificationIntent, null);
-
-//        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-//                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//
-//        PendingIntent resultPendingIntent =
-//                PendingIntent.getActivity(
-//                        context,
-//                        0, notificationIntent,
-//                        PendingIntent.FLAG_UPDATE_CURRENT
-//                );
-//
-//        Notification.Builder mBuilder =
-//                new Notification.Builder(context)
-//                        .setSmallIcon(R.drawable.ic_launcher)
-//                        .setContentTitle("Entered Spotz")
-//                        .setContentText("You have just entered spotz " + spot.name)
-//                        .setContentIntent(resultPendingIntent);
-//
-//        Notification notification = mBuilder.build();
-//
-//        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//        mNotificationManager.notify(("enter" + spot.spotId).hashCode(), notification);
-//
-//        new SpotzMap(context).put(spot.spotId, spot);
-//
-//        // Notify activity
-//        Intent notifyActivityIntent = new Intent(context.getPackageName() + MainActivity.SPOT_ENTERED_OR_EXITED);
-//        notifyActivityIntent.setPackage(context.getPackageName());
-//        context.sendBroadcast(notifyActivityIntent);
     }
 }

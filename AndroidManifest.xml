@@ -98,20 +98,14 @@
                 <action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_SPOT_EXIT" />
             </intent-filter>
         </receiver>
-
-        <receiver android:name="com.localz.spotz.sdk.app.receiver.OnSpotBeaconDistanceUpdatedBroadcastReceiver" android:exported="false">
-            <intent-filter>
-                <action android:name="com.localz.spotz.sdk.app.SPOT_BEACON_DISTANCE_UPDATED" />
-            </intent-filter>
-        </receiver>
         
         <!-- This receiver only required if you integrated Spotz platform with 3rd party system.
         The receiver will be invoked when reply is received from 3rd party system. -->
-        <receiver android:name="com.localz.spotz.sdk.app.receiver.OnIntegrationRespondedBroadcastReceiver" android:exported="false" >
-            <intent-filter>
-                <action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_INTEGRATION_RESPONDED" />
-            </intent-filter>
-        </receiver>
+        <!--<receiver android:name="com.localz.spotz.sdk.app.receiver.OnIntegrationRespondedBroadcastReceiver" android:exported="false" >-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_INTEGRATION_RESPONDED" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
         
         <!-- This receiver will be invoked when phone rebooted. Register this received only required to
         restart monitoring after reboot. -->

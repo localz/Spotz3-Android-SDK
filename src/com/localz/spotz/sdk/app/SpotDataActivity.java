@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.localz.spotz.sdk.Spotz;
 import com.localz.spotz.sdk.models.Beacon;
+import com.localz.spotz.sdk.models.Geofence;
 import com.localz.spotz.sdk.models.Spot;
 
 import java.util.ArrayList;
@@ -17,6 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Display Spot data including Beacon details.
+ */
 public class SpotDataActivity extends Activity {
 
     @Override
@@ -34,7 +38,8 @@ public class SpotDataActivity extends Activity {
         private static final int TYPE_HEADING = 0;
         private static final int TYPE_SPOT_DATA = 1;
         private static final int TYPE_BEACON = 2;
-        private static final int TYPE_PAYLOAD = 3;
+        private static final int TYPE_GEOFENCE = 3;
+        private static final int TYPE_PAYLOAD = 4;
         private static final int TYPE_COUNT = TYPE_PAYLOAD + 1;
 
         private final List<Object> dataList;
@@ -62,9 +67,15 @@ public class SpotDataActivity extends Activity {
                 dataList.add(spot.enteredBeacon);
             }
             typeMap.put(i++, TYPE_HEADING);
-            dataList.add("Payload");
-            if (spot.metadata != null) {
-                for (Map.Entry<String, Object> entry : spot.metadata.entrySet()) {
+            dataList.add("Geofence");
+            if (spot.enteredGeofence != null) {
+                typeMap.put(i++, TYPE_GEOFENCE);
+                dataList.add(spot.enteredGeofence);
+            }
+            typeMap.put(i++, TYPE_HEADING);
+            dataList.add("Attributes");
+            if (spot.attributes != null) {
+                for (Map.Entry<String, Object> entry : spot.attributes.entrySet()) {
                     typeMap.put(i++, TYPE_PAYLOAD);
                     dataList.add(entry);
                 }
@@ -111,53 +122,53 @@ public class SpotDataActivity extends Activity {
                 viewHolder.uuid = (TextView) view.findViewById(R.id.uuid);
                 viewHolder.major = (TextView) view.findViewById(R.id.major);
                 viewHolder.minor = (TextView) view.findViewById(R.id.minor);
-                viewHolder.serial = (TextView) view.findViewById(R.id.serial);
+                viewHolder.geofenceLayout = view.findViewById(R.id.geofence);
+                viewHolder.geofenceId = (TextView) view.findViewById(R.id.geofence_id);
+                viewHolder.geofenceCoordinates = (TextView) view.findViewById(R.id.geofence_coordinates);
                 viewHolder.payloadLayout = view.findViewById(R.id.payload);
                 viewHolder.key = (TextView) view.findViewById(R.id.key);
                 viewHolder.value = (TextView) view.findViewById(R.id.value);
                 view.setTag(viewHolder);
-            }
-            else {
+            } else {
                 viewHolder = (ViewHolder) view.getTag();
             }
+
+            viewHolder.heading.setVisibility(View.GONE);
+            viewHolder.spotzDataLayout.setVisibility(View.GONE);
+            viewHolder.geofenceLayout.setVisibility(View.GONE);
+            viewHolder.beaconLayout.setVisibility(View.GONE);
+            viewHolder.payloadLayout.setVisibility(View.GONE);
 
             switch (getItemViewType(position)) {
                 case TYPE_HEADING:
                     String heading = (String) getItem(position);
                     viewHolder.heading.setText(heading);
                     viewHolder.heading.setVisibility(View.VISIBLE);
-                    viewHolder.spotzDataLayout.setVisibility(View.GONE);
-                    viewHolder.beaconLayout.setVisibility(View.GONE);
-                    viewHolder.payloadLayout.setVisibility(View.GONE);
                     break;
                 case TYPE_SPOT_DATA:
                     Spot spot = (Spot) getItem(position);
                     viewHolder.id.setText(spot.spotId);
                     viewHolder.name.setText(spot.name);
                     viewHolder.spotzDataLayout.setVisibility(View.VISIBLE);
-                    viewHolder.heading.setVisibility(View.GONE);
-                    viewHolder.beaconLayout.setVisibility(View.GONE);
-                    viewHolder.payloadLayout.setVisibility(View.GONE);
                     break;
                 case TYPE_BEACON:
                     Beacon beacon = (Beacon) getItem(position);
                     viewHolder.uuid.setText(beacon.uuid);
                     viewHolder.major.setText("" + beacon.major);
                     viewHolder.minor.setText("" + beacon.minor);
-//                    viewHolder.serial.setText(beacon.serial);
                     viewHolder.beaconLayout.setVisibility(View.VISIBLE);
-                    viewHolder.spotzDataLayout.setVisibility(View.GONE);
-                    viewHolder.heading.setVisibility(View.GONE);
-                    viewHolder.payloadLayout.setVisibility(View.GONE);
+                    break;
+                case TYPE_GEOFENCE:
+                    Geofence geofence = (Geofence) getItem(position);
+                    viewHolder.geofenceId.setText(geofence.geofenceId);
+                    viewHolder.geofenceCoordinates.setText(geofence.latitude + "\n" + geofence.longitude);
+                    viewHolder.geofenceLayout.setVisibility(View.VISIBLE);
                     break;
                 case TYPE_PAYLOAD:
                     Map.Entry<String, Object> payload = (Map.Entry<String, Object>) getItem(position);
                     viewHolder.key.setText(payload.getKey());
                     viewHolder.value.setText(payload.getValue().toString());
                     viewHolder.payloadLayout.setVisibility(View.VISIBLE);
-                    viewHolder.spotzDataLayout.setVisibility(View.GONE);
-                    viewHolder.heading.setVisibility(View.GONE);
-                    viewHolder.beaconLayout.setVisibility(View.GONE);
                     break;
             }
 
@@ -174,7 +185,9 @@ public class SpotDataActivity extends Activity {
         public TextView uuid;
         public TextView major;
         public TextView minor;
-        public TextView serial;
+        public View geofenceLayout;
+        public TextView geofenceId;
+        public TextView geofenceCoordinates;
         public View payloadLayout;
         public TextView key;
         public TextView value;

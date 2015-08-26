@@ -45,7 +45,7 @@ dependencies {
 //        transitive = true
 //    }
 
-    compile 'com.localz.spotz.sdk:spotz-api:0.2.6'
+    compile 'com.localz.spotz.sdk:spotz-api:0.2.8'
     compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.4@jar'
     compile 'com.localz.spotz.sdk:spotz-sdk-android:3.0.0@jar'
     compile 'com.google.code.gson:gson:2.3'

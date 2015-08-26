@@ -71,7 +71,6 @@
 
     </RelativeLayout>
 
-
     <RelativeLayout
         android:id="@+id/beacon"
         android:layout_width="match_parent"
@@ -110,14 +109,6 @@
                 android:text="MINOR"
                 android:textColor="@android:color/white"/>
 
-            <com.localz.spotz.sdk.app.widgets.CustomFontTextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:text="SERIAL"
-                android:textColor="@android:color/white"/>
-
         </LinearLayout>
 
         <LinearLayout
@@ -153,10 +144,60 @@
                 localz:font="roboto_thin"
                 android:textColor="@android:color/white"/>
 
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/geofence"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+        <LinearLayout
+            android:id="@+id/geofence_labels"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
             <com.localz.spotz.sdk.app.widgets.CustomFontTextView
-                android:id="@+id/serial"
                 android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="ID"
+                android:textColor="@android:color/white"/>
+
+            <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="COORDINATES"
+                android:textColor="@android:color/white"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/geofence_labels"
+            android:orientation="horizontal">
+
+            <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+                android:id="@+id/geofence_id"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                localz:font="roboto_thin"
+                android:textColor="@android:color/white"/>
+
+            <com.localz.spotz.sdk.app.widgets.CustomFontTextView
+                android:id="@+id/geofence_coordinates"
+                android:layout_width="0dp"
+                android:layout_weight="2"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 localz:font="roboto_thin"

@@ -27,21 +27,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <!--<com.localz.spotz.sdk.app.widgets.CustomFontTextView-->
-        <!--android:id="@+id/activity_spot_ranging_distance"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_above="@id/circle"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:paddingBottom="28dp"-->
-        <!--android:text="@string/message_ranging_distance"-->
-        <!--android:textColor="@android:color/white"-->
-        <!--android:textSize="20sp"-->
-        <!--android:visibility="invisible"-->
-        <!--localz:font="roboto_thin" />-->
-        
     <com.localz.spotz.sdk.app.widgets.CustomFontTextView
-        android:id="@+id/activity_range_text"
+        android:id="@+id/activity_status_text"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -50,17 +37,6 @@
         android:textColor="#f1c40f"
         android:textSize="36sp"
         localz:font="roboto_thin" />
-
-    <!--<com.localz.spotz.sdk.app.widgets.CustomFontTextView-->
-        <!--android:id="@+id/activity_serial_text"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@id/circle"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginTop="-26dp"-->
-        <!--android:gravity="center"-->
-        <!--android:textColor="#88bdc3c7"-->
-        <!--android:textSize="12sp" />-->
 
     <LinearLayout
         android:id="@+id/footer"
@@ -89,22 +65,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="www.localz.co"
+            android:text="localz.co"
             android:textColor="#FFFFFF"
             android:textSize="13sp" />
     </LinearLayout>
-
-    <com.localz.spotz.sdk.app.widgets.CustomFontTextView
-        android:id="@+id/activity_spot_data_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/footer"
-        android:layout_centerHorizontal="true"
-        android:paddingBottom="28dp"
-        android:text="@string/message_view_spot_data"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        android:visibility="invisible"
-        localz:font="roboto_thin" />
 
 </RelativeLayout>
