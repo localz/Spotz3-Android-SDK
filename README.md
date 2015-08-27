@@ -1,9 +1,23 @@
 <a href="http://www.localz.co/"><img alt="Localz logo" width="127" height="35" align="right" src="http://localz.com/wp-content/uploads/2015/02/localz_logo.png" /></a> Spotz Android SDK
 =================
 
-[Spotz](https://spotz.localz.io/) is a user engagement platform that utilises Bluetooth Low Energy, GPS and NFC. You can create any 'Spot' you want - an exhibit, a room, an event, or even an entire street.
+[Spotz](https://spotz.localz.io/) is a smartphone engagement platform that simplifies integration of micro-location technologies including Bluetooth Low Energy beacons, NFC and geofence (Location-Based Services, GPS and WiFi).  
 
-The Spotz3 Android SDK allows your Android app to detect when it is in range of your spots and receive payload data - e.g. detailed information about an exhibit, promotional offers, media, it can be anything!
+A ‘spot’ is a specific area of interaction.  It can be defined as either:
+* Absolute location: a geo position and expressed in terms like latitude and longitude
+* Relative location: a position relative to real-world objects and expressed in terms like distance from X.
+
+Once a location is set, an action is defined to trigger an event:
+* on entry to the spot
+* on exit of the spot
+* at a specified proximity to a spot 
+
+In the context of a conference experience, a spot could be defined as:
+* a building: send a welcome message on entry to the conference venue
+* a presentation room: present a survey on exit of a presentation room
+* an exhibitor stand: trigger an exchange of contact details on approach to an exhibitor
+
+The Spotz3 Android SDK allows your Android app to detect when it is in range of defined spots and receive payload data such as text, messages, key-pair values, images or videos.  The SDK will operate either in the foreground or background.  Your application does not need to be active for the SDK to trigger experiences. 
 
 Changelog
 =========
