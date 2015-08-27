@@ -28,16 +28,16 @@ Changelog
 What does the sample app do?
 ============================
 
-The app simply tells you if you are in the proximity of a spot.
+The app triggers a background notification or application event when in proximity of a spot.
 
-If you are in the proximity of a spot, you will receive a notification. If you open the app, you will also be able to see any data associated with that Spot. Further, if you define a spot as "ranging", you will also see the distance to the closest beacon in the spot.
+You will receive a notification on entry to a spot. When the app is open and in the foreground, you can view data associated with that spot. Further, if you define a spot as "ranging", you can view distance to the spot.
 
 Monitoring will continue even if you exit the app or reboot your phone.
 
 How to run the sample app
 =========================
 
-The sample app requires devices running Android 2.3.3 or newer. However, Bluetooth Low Energy is only supported on devices running Android 4.3 or newer.
+The sample app requires devices running Android 2.3.3 or newer. However, Bluetooth Low Energy (BLE) is only supported on devices running Android 4.3 or newer and equipped with a Bluetooth v4.0 or later chipset.
 
   1. Clone the repository:
   
@@ -51,13 +51,13 @@ The sample app requires devices running Android 2.3.3 or newer. However, Bluetoo
     
     *The project targets Android 5.1 (API level 22) so check you have this version in your Android SDK.*
     
-  3. Define a spot using the [Spotz console](https://spotz.localz.io). Don't forget to add a beacon to your Spot. If you don't have a real beacon, don't worry, you can use the Beacon Toolkit app:
+  3. Define a spot using the [Spotz console](https://spotz.localz.io). If using Bluetooth Low Energy, don't forget to add a beacon to your Spot. If you don't have a real beacon, you can use our Beacon Toolkit app to emulate an iBeacon:
   
     <a href="https://itunes.apple.com/us/app/beacon-toolkit/id838735159?ls=1&mt=8">
     <img alt="Beacon Toolkit on App Store" width="100" height="33"
          src="http://localz.wpengine.com/wp-content/uploads/2014/03/app-store-300x102.jpg" />
     </a>    
-    As Android L now supports peripheral, we will have version of Android Beacon Toolkit sometime soon!
+    As Android L supports BLE peripheral mode, an Android version of our Beacon Toolkit will be released soon. 
 
   4. Insert your Spotz Application ID and Application Key into MainActivity.java - these can be found in the Spotz console under your application. Be sure to use the *android* client key:
 
@@ -145,7 +145,7 @@ If you're a **Maven** user you can include the library in your pom.xml:
     
 You will also need to add dependency to google play services. Google play services is not available via public maven repositories. You will need to create a package (apklib or aar), load to your local maven repository and then use it as a reference in your pom.xml. The following tool should help: [https://github.com/simpligility/maven-android-sdk-deployer/](https://github.com/simpligility/maven-android-sdk-deployer/).
 
-Otherwise, if you are old school, you can manually copy all the JARs in your libs folder and add them to your project's dependencies. Your libs folder will have at least the following JARs:
+If rolling old school, you can manually copy all the JARs in your libs folder and add them to your project's dependencies. Your libs folder will have at least the following JARs:
 
 - spotz-sdk-android-3.0.0.jar
 - ble-smart-sdk-android-1.0.4.jar
@@ -163,7 +163,7 @@ and also add "google play services lib" library project to your project. For ins
 How to use the SDK
 ==================
 
-**Starting with release 3.0.0 of the SDK, devices that do not support Bluetooth Low Energy (generally Android 4.3 API level 18 or newer) are still able to make use of the Spotz SDK**. But only Geofence and NFC spots can be triggered.
+**Starting with release 3.0.0 of the SDK, devices that do not support Bluetooth Low Energy (generally Android 4.3 API level 18 or newer) are still able to make use of the Spotz SDK**. However, only spots defined by either a Geofence or NFC can be triggered.
 
 There are only 3 actions to implement - **initialize**, **scan**, and **listen**!
 
@@ -299,7 +299,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
                 true    // you can set this flag to 'true' and the SDK will start scanning automatically after initialisation
         );
 
-The SDK will communicate with Spotz servers, authenticate, and register a device. Then it will download spots that you registered on the [Spotz console](https://spotz.localz.io). The SDK will handle any changes you've made to your server configuration.
+The SDK will communicate with Spotz servers, authenticate, and register a device. It will download all spots you registered on the [Spotz console](https://spotz.localz.io). The SDK will handle any changes you've made to your server configuration.
   
 Your project is now ready to start using the Spotz SDK!
 
@@ -416,21 +416,21 @@ Spotz SDK supports restarting of monitoring for spots after a phone was rebooted
 
 #### Ranging
 
-Ranging is an iOS term. There are two spot modes that app can be interested in:
+Ranging is a term originally defined by iOS interactions. There are two modes that an app can operate:
 
-  1. Monitoring - SDK will look for spotz with regular, reasonably infrequent interval (in minutes) and will notify application when a spot is detected. Monitoring does NOT run in your application process and your application is notified using Broadcast Receivers. Monitoring is reasonably inexpensive in terms of battery and CPU usage.
+  1. Monitoring - SDK will scan with regular, reasonably infrequent interval (in minutes) and will notify application when a spot is detected. Monitoring does NOT run in your application process and your application is notified using Broadcast Receivers. Monitoring is reasonably inexpensive in terms of battery and CPU usage.
 
-  2. Ranging - SDK will scan with the aim of getting the distance to beacons in a spot. Ranging runs in your process and has to be scheduled by your process. Scheduling is typically very frequent (e.g. every 1 sec). Ranging is very expensive, hence consider carefully when you range and never forget to stop ranging.
+  2. Ranging - SDK will scan with the aim of getting the distance to a spot defined by BLE beacons. Ranging runs in your process and has to be scheduled by your process. Scheduling is typically very frequent (e.g. every 1 sec). Ranging is very expensive, hence consider carefully when you range and never forget to stop ranging.
 
 In Spotz Android SDK ranging is implemented as following:
 
-  1. You define a beacon on Spotz Console as ranging (Immediate 0-1 meters, Near 0-5 meters, Far 0-50 meters). SDK monitors for spots. When a ranging beacon is detected, SDK will calculate the distance and will only notify that you are in range of a Spot if the distance is less than you specify on the console.
+  1. Define a BLE beacon on Spotz Console as ranging (Immediate 0-1 meters, Near 0-5 meters, Far 0-50 meters). SDK monitors for spots. When a ranging BLE beacon is detected, SDK will calculate the distance and will only notify that you are in range of a Spot if the distance is less than you specify on the console.
 
-  2. Once you are in range, if you open the app, you will need to schedule ranging, which can be achieve in many different ways. In the sample application this is done by using 'startForegroundScanning' with a 1 second interval.
+  2. Once in range, on app open, you will need to schedule ranging, which can be achieve in many different ways. In the sample application this is done by using 'startForegroundScanning' with a 1 second interval.
 
  **Important!** Start scanning in onResume() and stop onPause() to avoid unnecessary battery drain.
 
-Note: calculation of distance is based on rssi and txPower values as broadcasted by a beacon. Distance is not exactly scientifically accurate. More accurate value could be derived by averaging distance over number of ranging samples. Spotz SDK uses the following formula for distance:
+Note: calculation of distance is based on rssi and txPower values as broadcasted by a BLE beacon. Distance accuracy with vary by environmental conditions. Greater accuracy can be derived by averaging distance over number of ranging samples. Spotz SDK uses the following formula for distance:
 
 	double ratio = rssi * 1.0 / tx;
 	if (ratio < 1.0) {
@@ -438,6 +438,7 @@ Note: calculation of distance is based on rssi and txPower values as broadcasted
 	} else {
 		distance = (float) ((0.42093) * Math.pow(ratio, 6.9476) + 0.54992);
 	}
+If you require greater accuracy and precison, contact the Localz team for a non-public SDK that includes advanced positioning features including dead reckoning and accelerometer augmented positioning. 
 
 #### Monitoring a subset of spots
 
@@ -462,7 +463,7 @@ In this case, SDK initialization will be similar to the following:
 
 #### Integration with 3rd party systems  
 
-[Spotz integration guide] (https://github.com/localz/Spotz-Docs/blob/master/README.md) introduces the concept and provides details of how to add integrations to Spotz. Sometimes you might want to provide identity of the user that uses your application to the system that you integrate with. This is achieved by providing the identity to Spotz via setDeviceIdentity(...) call in Spotz SDK. E.g.:
+[Spotz integration guide] (https://github.com/localz/Spotz-Docs/blob/master/README.md) introduces the concept and provides details of how to add integrations to Spotz. As an example, you might want to provide a custom identity for users of your application for integrated and segmented analytics. This is achieved by providing the identity to Spotz via setDeviceIdentity(...) call in Spotz SDK. E.g.:
 
 	Spotz.getInstance().initialize(context, // Your context
 		"your-application-id",          // Your application ID goes here
@@ -490,4 +491,4 @@ For bugs, feature requests, or other questions, [file an issue](https://github.c
 License
 =======
 
-Copyright 2015 [Localz Pty Ltd](http://localz.co/)
+Copyright 2015 [Localz Pty Ltd](http://localz.com/)
