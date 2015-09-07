@@ -483,10 +483,10 @@ The statement above will make Identity value "#565589" available to all 3rd part
 
 You can also define other attributes for a Device, not just the Identity, and they will also be available to all 3rd party integration systems:
 
-   Map<String, Object> attributes = new HashMap<>();
-   attributes.put("deviceAttribute", "someValue");
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put("deviceAttribute", "someValue");
 
-   Spotz.getInstance().setDeviceAttributes(context, attributes, listener);
+    Spotz.getInstance().setDeviceAttributes(context, attributes, listener);
 
 Should you wish to pass a value ONLY to one 3rd party system, use setDeviceExtensions(context, extensions, responseListener) SDK call:
 
