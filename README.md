@@ -88,13 +88,13 @@ If you're a **Gradle** user you can easily include the library by specifying it 
     dependencies {
         compile 'com.localz.spotz.sdk:spotz-api:0.2.8'
 
-        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.4@aar'
+        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.5@aar'
         or
-        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.4@jar'
+        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.5@jar'
 
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.0.0@aar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.0.2@aar'
         or
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.0.0@jar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.0.2@jar'
 
         // additional dependencies required by SDK
         compile 'com.google.code.gson:gson:2.3'
@@ -114,7 +114,7 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-android</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.2</version>
       <type>aar</type> or <type>jar</type>
     </dependency>
     
@@ -127,7 +127,7 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.proximity.blesmart</groupId>
       <artifactId>ble-smart-sdk-android</artifactId>
-      <version>1.0.4</version>
+      <version>1.0.5</version>
       <type>aar</type> or <type>jar</type>
     </dependency>
 
@@ -147,8 +147,8 @@ You will also need to add dependency to google play services. Google play servic
 
 If rolling old school, you can manually copy all the JARs in your libs folder and add them to your project's dependencies. Your libs folder will have at least the following JARs:
 
-- spotz-sdk-android-3.0.0.jar
-- ble-smart-sdk-android-1.0.4.jar
+- spotz-sdk-android-3.0.2.jar
+- ble-smart-sdk-android-1.0.5.jar
 - spotz-api-0.2.8.jar
 - google-http-client-1.20.0.jar
 - google-http-client-gson-1.20.0.jar
@@ -163,7 +163,7 @@ and also add "google play services lib" library project to your project. For ins
 How to use the SDK
 ==================
 
-**Starting with release 3.0.0 of the SDK, devices that do not support Bluetooth Low Energy (generally Android 4.3 API level 18 or newer) are still able to make use of the Spotz SDK**. However, only spots defined by either a Geofence or NFC can be triggered.
+**Starting with release 3.0.2 of the SDK, devices that do not support Bluetooth Low Energy (generally Android 4.3 API level 18 or newer) are still able to make use of the Spotz SDK**. But only Geofence and NFC spots can be triggered.
 
 There are only 3 actions to implement - **initialize**, **scan**, and **listen**!
 
@@ -394,10 +394,10 @@ Your project is now ready to start using the Spotz SDK!
 
   Updating Device specific data:
 
-        // Provide user identity to be associated with a registered device
+        // Provide a user identity to be associated with a registered device
         Spotz.getInstance().setDeviceIdentity(context, userIdentity, responseListener);
 
-        // Delete user identity associated from a registered device
+        // Delete a associated user identity from a registered device
         Spotz.getInstance().deleteDeviceIdentity(context, responseListener);
 
         // Set device attributes
@@ -448,7 +448,9 @@ In this case, SDK initialization will be similar to the following:
 	Map<String, String> attributes = new HashMap<String, String>();
 	attributes.put("show", "yes"); 
 	attributes.put("city", "Melbourne");
+
 	Spotz.getInstance().setSpotAttributes(attributes);
+
 	Spotz.getInstance().initialize(context, // Your context
 		"your-application-id",          // Your application ID goes here
 		"your-application-key",         // Your application key goes here
@@ -463,25 +465,76 @@ In this case, SDK initialization will be similar to the following:
 
 #### Integration with 3rd party systems  
 
-[Spotz integration guide] (https://github.com/localz/Spotz-Docs/blob/master/README.md) introduces the concept and provides details of how to add integrations to Spotz. As an example, you might want to provide a custom identity for users of your application for integrated and segmented analytics. This is achieved by providing the identity to Spotz via setDeviceIdentity(...) call in Spotz SDK. E.g.:
+[Spotz Integration guide] (https://github.com/localz/Spotz-Docs/blob/master/README.md) introduces the concept and provides details of how to add Integrations to Spotz. Spotz platform make it easy for you to re-use Application, Site, Spot and Device data in your Integration. Spotz SDK allows you to associate 3 different types of data with a Device:
 
-	Spotz.getInstance().initialize(context, // Your context
-		"your-application-id",          // Your application ID goes here
-		"your-application-key",         // Your application key goes here
-		new InitializationListenerAdapter() {
-			@Override
-			public void onInitialized() {
-			// Now that we're initialized, we can start scanning for Spotz here 
-			}
-		},
-		false
-	);
+ - Device Identity
+
+ - Device attributes
+
+ - Device Integration attributes
+
+Sometimes you might want to provide an Identity of a user that uses your application to the system that you integrate with. This is achieved by associating a user Identity with a Spotz Device via setDeviceIdentity(...) call in Spotz SDK. E.g.:
+
 	Spotz.getInstance().setDeviceIdentity(context, "#565589", responseListener);
-	// the statement above will make identity value "#565589"
-    // available to all 3rd party integration systems.
-    // Should you wish to pass the value ONLY to a one 3rd party system,
-    // use setDeviceExtensions(context, extensions, responseListener) SDK call
 
+The statement above will make Identity value "#565589" available to all 3rd party integration systems. To remove this user-device association (e.g. after user logout) - use deleteDeviceIdentity(...) SDK call:
+
+    Spotz.getInstance().deleteDeviceIdentity(context, responseListener);
+
+You can also define other attributes for a Device, not just the Identity, and they will also be available to all 3rd party integration systems:
+
+   Map<String, Object> attributes = new HashMap<>();
+   attributes.put("deviceAttribute", "someValue");
+
+   Spotz.getInstance().setDeviceAttributes(context, attributes, listener);
+
+Should you wish to pass a value ONLY to one 3rd party system, use setDeviceExtensions(context, extensions, responseListener) SDK call:
+
+    DeviceRegisterPostRequest.Extension extension = new DeviceRegisterPostRequest.Extension();
+
+    extension.name = "extensionName";
+    extension.type = "extensionType";
+    extension.attributes = new HashMap<>();
+    extension.attributes.put("extensionSpecificAttribute", "#565589");
+
+    DeviceRegisterPostRequest.Extension[] extensions = new DeviceRegisterPostRequest.Extension[] {extension};
+
+    Spotz.getInstance().setDeviceExtensions(context, extensions, listener);
+
+##### Consuming Integration response
+
+If you would like to re-use the response from your Integrations, you will need to register a receiver for the Integration response:
+
+    <receiver android:name="com.foo.app.receivers.OnIntegrationRespondedBroadcastReceiver" android:exported="false">
+        <intent-filter>
+            <action android:name="com.foo.app.SPOTZ_ON_INTEGRATION_RESPONDED" />
+        </intent-filter>
+    </receiver>
+
+Then in your broadcast receiver you can access a "raw" Integration response:
+
+    String integrationResponse = (String) intent.getSerializableExtra(Spotz.EXTRA_INTEGRATION);
+
+Where "integrationResponse" is a String representation of a JSON response and has the following structure:
+
+    {
+        "123qwe123qwe": {                   // Id of a Spot which triggered the event (there may be more than one Spot in response)
+            "control4localz": {             // Name of an Integration (there may be more than one Integration per Spot)
+                "body": "...",              // Response body - whatever response is received from a 3rd party system
+                "statusCode": 200,          // Response status code
+                "headers": {                // Response headers
+                    "content-length": "0",
+                    "expires": "-1",
+                    "x-powered-by": "ASP.NET",
+                    "set-cookie": [
+                        "someCookie=f7a7d929498d905a47e47168825efb28c644772e20587fe4f0525d493a8bf452;Path=/;Domain=some-domain.net"
+                    ],
+                    "date": "Mon, 07 Sep 2015 01:36:54 GMT"
+                }
+            }
+        },
+        "date": "2015-09-07T01:36:55.116Z"  // Integration event date and time
+    }
 
 Contribution
 ============
@@ -491,4 +544,4 @@ For bugs, feature requests, or other questions, [file an issue](https://github.c
 License
 =======
 
-Copyright 2015 [Localz Pty Ltd](http://localz.com/)
+Copyright 2015 [Localz Pty Ltd](http://localz.co/)
