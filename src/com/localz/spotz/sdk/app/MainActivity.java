@@ -1,5 +1,6 @@
 package com.localz.spotz.sdk.app;
 
+import android.Manifest;
 import android.animation.AnimatorSet;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -9,8 +10,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,12 +42,13 @@ public class MainActivity extends Activity {
     public static final String SPOT_ENTERED_OR_EXITED = ".SPOT_ENTERED_OR_EXITED";
 
     private static final int REQUEST_ENABLE_BT = 13;
+    private static final int REQUEST_ACCESS_LOCATION = 14;
 
-    private static final long FOREGROUND_INTERVAL = 2000;
-    private static final long FOREGROUND_DURATION = 1000;
+    private static final long FOREGROUND_SCAN_INTERVAL = 2000;
+    private static final long FOREGROUND_SCAN_DURATION = 1000;
 
-    private static final long BACKGROUND_INTERVAL = 60000;
-    private static final long BACKGROUND_DURATION = 5000;
+    private static final long BACKGROUND_SCAN_INTERVAL = 60000;
+    private static final long BACKGROUND_SCAN_DURATION = 5000;
 
     // This BroadcastReceiver is to be notified when a device enters or exits a spot.
     // It is used to refresh status on the screen.
@@ -62,6 +67,7 @@ public class MainActivity extends Activity {
     private SpotComparator spotComparator = new SpotComparator();
 
     private AnimatorSet animatorSet;
+    private AlertDialog alertDialog;
 
     private boolean scanning;
 
@@ -73,6 +79,7 @@ public class MainActivity extends Activity {
 
         statusText = (TextView) findViewById(R.id.activity_status_text);
         startStop = (Button) findViewById(R.id.start_stop);
+
         ListView activeSpotsListView = (ListView) findViewById(R.id.spots_list_view);
         spotListAdapter = new SpotListAdapter();
         activeSpotsListView.setAdapter(spotListAdapter);
@@ -98,12 +105,12 @@ public class MainActivity extends Activity {
         startStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                if (scanning || Spotz.getInstance().isScanningForSpotz(MainActivity.this)) {
+                if (scanning || Spotz.getInstance().isScanningForSpotz(getApplicationContext())) {
                     stopScanning();
                     startStop.setText(getString(R.string.start_scanning));
                     inSpotMap.clear();
                 } else {
-                    boolean isInitialised = Spotz.getInstance().isInitialized(MainActivity.this);
+                    boolean isInitialised = Spotz.getInstance().isInitialized(getApplicationContext());
                     if (!isInitialised) {
                         startStop.setVisibility(View.INVISIBLE);
                         inSpotMap.clear();
@@ -117,6 +124,8 @@ public class MainActivity extends Activity {
                 adjustUI();
             }
         });
+        // output debug info
+        Spotz.getInstance().setDebug(getApplicationContext(), true);
     }
 
     /**
@@ -129,9 +138,9 @@ public class MainActivity extends Activity {
         statusText.setText("Initialising");
         statusText.setVisibility(View.VISIBLE);
         startStop.setVisibility(View.INVISIBLE);
-        Spotz.getInstance().initialize(this,
-                "your-application-id",          // Your application ID goes here
-                "your-application-key",         // Your application key goes here
+        Spotz.getInstance().initialize(getApplicationContext(),
+                "your-application-id", // Your application ID goes here
+                "your-client-key", // Your client key goes here
                 new InitializationListenerAdapter() {
                     @Override
                     public void onInitialized() {
@@ -162,12 +171,12 @@ public class MainActivity extends Activity {
 
     /**
      * Start "active" (foreground) scanning.
-     * This will scan for beacons and report results every 5 seconds.
+     * This will scan for beacons and report results every 2 seconds.
      */
     private void startActiveScanning() {
-        if (Spotz.getInstance().isInitialized(MainActivity.this)) {
+        if (Spotz.getInstance().isInitialized(getApplicationContext())) {
             Log.d(TAG, "startActiveScanning");
-            Spotz.getInstance().startForegroundScanning(MainActivity.this, FOREGROUND_INTERVAL, FOREGROUND_DURATION);
+            Spotz.getInstance().startForegroundScanning(getApplicationContext(), FOREGROUND_SCAN_INTERVAL, FOREGROUND_SCAN_DURATION);
             animatorSet = CustomAnimation.startWaveAnimation(findViewById(R.id.wave));
         }
     }
@@ -177,10 +186,10 @@ public class MainActivity extends Activity {
      * This will scan for beacons and report results every 60 seconds.
      */
     private void startPassiveScanning() {
-        if (Spotz.getInstance().isInitialized(MainActivity.this)) {
+        if (Spotz.getInstance().isInitialized(getApplicationContext())) {
             Log.d(TAG, "startPassiveScanning");
             scanning = false;
-            Spotz.getInstance().startBackgroundScanning(MainActivity.this, BACKGROUND_INTERVAL, BACKGROUND_DURATION);
+            Spotz.getInstance().startBackgroundScanning(getApplicationContext(), BACKGROUND_SCAN_INTERVAL, BACKGROUND_SCAN_DURATION);
         }
     }
 
@@ -188,10 +197,10 @@ public class MainActivity extends Activity {
      * Stop scanning.
      */
     private void stopScanning() {
-        if (Spotz.getInstance().isInitialized(MainActivity.this)) {
+        if (Spotz.getInstance().isInitialized(getApplicationContext())) {
             Log.d(TAG, "stopScanning");
             scanning = false;
-            Spotz.getInstance().stopScanningForSpotz(MainActivity.this);
+            Spotz.getInstance().stopScanningForSpotz(getApplicationContext());
             CustomAnimation.stopWaveAnimation(animatorSet);
         }
     }
@@ -216,19 +225,26 @@ public class MainActivity extends Activity {
             IntentFilter intentFilter = new IntentFilter(getPackageName() + Spotz.BROADCAST_DISTANCE);
             registerReceiver(spotDistanceUpdatedBroadcastReceiver, intentFilter);
         }
-        // output debug info
-        Spotz.getInstance().setDebug(true);
 
-        boolean isScanningForSpotz = Spotz.getInstance().isScanningForSpotz(MainActivity.this);
-        if (isScanningForSpotz) {
-            // if was already scanning (in the background) then continue to do so but in the foreground
-            startStop.setText(getString(R.string.stop_scanning));
-            startActiveScanning();
+        init();
+    }
+
+    private void init() {
+        closeAlertDialog();
+        if (hasPermissions()) {
+            boolean isScanningForSpotz = Spotz.getInstance().isScanningForSpotz(getApplicationContext());
+            if (isScanningForSpotz) {
+                // if was already scanning (in the background) then continue to do so but in the foreground
+                startStop.setText(getString(R.string.stop_scanning));
+                startActiveScanning();
+            } else {
+                new SpotzMap(this).clear();
+                startStop.setText(getString(R.string.start_scanning));
+                scanning = false;
+                initBle();
+            }
         } else {
-            new SpotzMap(this).clear();
-            startStop.setText(getString(R.string.start_scanning));
-            scanning = false;
-            init();
+            tryRequestPermissions();
         }
     }
 
@@ -256,7 +272,7 @@ public class MainActivity extends Activity {
             }
         }
         CustomAnimation.stopWaveAnimation(animatorSet);
-        if (scanning || Spotz.getInstance().isScanningForSpotz(MainActivity.this)) {
+        if (scanning || Spotz.getInstance().isScanningForSpotz(getApplicationContext())) {
             // if was already scanning (in the foreground) then continue to do so but in the background
             startPassiveScanning();
         }
@@ -279,11 +295,11 @@ public class MainActivity extends Activity {
                     statusText.setText("Scanning");
                     setInRange();
                 } else {
-                    if (scanning || Spotz.getInstance().isScanningForSpotz(MainActivity.this)) {
+                    if (scanning || Spotz.getInstance().isScanningForSpotz(getApplicationContext())) {
                         statusText.setText("Scanning");
                         statusText.setVisibility(View.VISIBLE);
                         setOutOfRange();
-                    } else if (Spotz.getInstance().isInitialized(MainActivity.this)) {
+                    } else if (Spotz.getInstance().isInitialized(getApplicationContext())) {
                         statusText.setText("Initialised");
                         statusText.setVisibility(View.VISIBLE);
                     } else {
@@ -353,8 +369,8 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void init() {
-        Log.d(TAG, "init");
+    private void initBle() {
+        Log.d(TAG, "initBle");
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter != null) {
             if (!bluetoothAdapter.isEnabled()) {
@@ -364,6 +380,7 @@ public class MainActivity extends Activity {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        closeAlertDialog();
                         Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
                     }
@@ -371,15 +388,17 @@ public class MainActivity extends Activity {
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (!Spotz.getInstance().isInitialized(MainActivity.this)) {
+                        closeAlertDialog();
+                        if (!Spotz.getInstance().isInitialized(getApplicationContext())) {
                             MainActivity.this.initialiseSpotzSdk(false);
                         } else {
                             adjustUI();
                         }
                     }
                 });
-                builder.show();
-            } else if (!Spotz.getInstance().isInitialized(MainActivity.this)) {
+                alertDialog = builder.create();
+                alertDialog.show();
+            } else if (!Spotz.getInstance().isInitialized(getApplicationContext())) {
                 initialiseSpotzSdk(false);
             }
         } else {
@@ -413,16 +432,89 @@ public class MainActivity extends Activity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                closeAlertDialog();
                 MainActivity.this.initialiseSpotzSdk(false);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                closeAlertDialog();
                 MainActivity.this.finish();
             }
         });
-        builder.show();
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void closeAlertDialog() {
+        if (alertDialog != null) {
+            alertDialog.dismiss();
+            alertDialog = null;
+        }
+    }
+
+    /**
+     * Check permissions if running Android 6.x
+     * @return true or false
+     */
+    private boolean hasPermissions() {
+        return ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /**
+     * If running Android 6 or up, a user may disable 'Location' permission for the app, so we need check if it is enabled and ask a user to enable it if it's disabled.
+     */
+    private void tryRequestPermissions() {
+        // Should we show an explanation?
+        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                || ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
+            // Show an explanation to the user *asynchronously* -- don't block this thread waiting for the user's response!
+            // After the user sees the explanation, try again to request the permission.
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage("Spotz SDK requires access to Location service. Is that OK?");
+            builder.setCancelable(false);
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    closeAlertDialog();
+                    requestPermissions();
+                }
+            });
+            builder.setNegativeButton("Nope", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    closeAlertDialog();
+                    MainActivity.this.finish();
+                }
+            });
+            alertDialog = builder.create();
+            alertDialog.show();
+
+        } else {
+            // No explanation needed, we can request the permission.
+            requestPermissions();
+        }
+    }
+
+    private void requestPermissions() {
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_ACCESS_LOCATION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode == REQUEST_ACCESS_LOCATION) {
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // permission was granted, yay!
+            } else {
+                // permission denied, boo!
+            }
+            init();
+        }
     }
 
     public class SpotListAdapter extends BaseAdapter {

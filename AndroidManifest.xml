@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.localz.spotz.sdk.app"
-    android:versionCode="1"
-    android:versionName="1.0.0" >
+    android:versionCode="2"
+    android:versionName="1.0.1" >
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- Full set of permissions required by Spotz SDK -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -21,11 +19,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
   
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="false"/>
-      
-    <uses-sdk 
-        android:minSdkVersion="10"
-        android:targetSdkVersion="22" />
-   
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -51,7 +45,8 @@
         <!-- These services must be defined in your app to enable background scanning -->
         <service android:name="com.localz.proximity.ble.services.BleHeartbeat" />
         <service android:name="com.localz.spotz.sdk.geofence.GeofenceTransitionsIntentService"/>
-        
+        <service android:name="com.localz.spotz.sdk.geofence.LocationUpdateHeartbeat"/>
+
         <!-- These broadcast receivers are used internally in Spotz SDK. They must be registered in AndroidManifest file -->
 
         <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFoundReceiver" >

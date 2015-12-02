@@ -1,7 +1,7 @@
 <a href="http://www.localz.co/"><img alt="Localz logo" width="127" height="35" align="right" src="http://localz.com/wp-content/uploads/2015/02/localz_logo.png" /></a> Spotz Android SDK
 =================
 
-[Spotz](https://spotz.localz.io/) is a smartphone engagement platform that simplifies integration of micro-location technologies including Bluetooth Low Energy beacons, NFC and geofence (Location-Based Services, GPS and WiFi).  
+[Spotz](https://console.localz.io/) is a smartphone engagement platform that simplifies integration of micro-location technologies including Bluetooth Low Energy beacons, NFC and geofence (Location-Based Services, GPS and WiFi).  
 
 A ‘spot’ is a specific area of interaction.  It can be defined as either:
 * Absolute location: a geo position and expressed in terms like latitude and longitude
@@ -21,6 +21,10 @@ The Spotz3 Android SDK allows your Android app to detect when it is in range of 
 
 Changelog
 =========
+
+**1.0.1**
+* Updated SDK and sample app to run under Android 6.x.
+* Bug fixes and improvements.
 
 **1.0.0**
 * Initial public release.
@@ -49,9 +53,9 @@ The sample app requires devices running Android 2.3.3 or newer. However, Bluetoo
 
     If you're using **Eclipse ADT**, in your workspace do File -> Import -> General -> Existing Projects into Workspace first for google-play-services-lib library project and then for the main project.
     
-    *The project targets Android 5.1 (API level 22) so check you have this version in your Android SDK.*
+    *The project targets Android 6.0 (API level 23) so check you have this version in your Android SDK.*
     
-  3. Define a spot using the [Spotz console](https://spotz.localz.io). If using Bluetooth Low Energy, don't forget to add a beacon to your Spot. If you don't have a real beacon, you can use our Beacon Toolkit app to emulate an iBeacon:
+  3. Define a spot using the [Spotz console](https://console.localz.io). If using Bluetooth Low Energy, don't forget to add a beacon to your Spot. If you don't have a real beacon, you can use our Beacon Toolkit app to emulate an iBeacon:
   
     <a href="https://itunes.apple.com/us/app/beacon-toolkit/id838735159?ls=1&mt=8">
     <img alt="Beacon Toolkit on App Store" width="100" height="33"
@@ -88,23 +92,25 @@ If you're a **Gradle** user you can easily include the library by specifying it 
     dependencies {
         compile 'com.localz.spotz.sdk:spotz-api:0.2.8'
 
-        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.5@aar'
+        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.7@aar'
         or
-        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.5@jar'
+        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.7@jar'
 
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.0.2@aar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.0.3@aar'
         or
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.0.2@jar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.0.3@jar'
 
         // additional dependencies required by SDK
-        compile 'com.google.code.gson:gson:2.3'
+        compile 'com.google.android.gms:play-services-location:8.3.0'
+        compile 'com.android.support:support-v4:23.1.1'
+
+        compile 'com.google.code.gson:gson:2.4'
         compile 'com.google.http-client:google-http-client:1.20.0'
         compile 'com.google.http-client:google-http-client-gson:1.20.0'
-        compile 'com.j256.ormlite:ormlite-android:4.48'
+
         compile 'io.reactivex:rxjava:1.0.10'
         compile 'io.reactivex:rxandroid:0.24.0'
         compile 'io.reactivex:rxjava-async-util:0.21.0'
-        compile 'com.google.android.gms:play-services:6.5.87'
         ...
     }
 
@@ -114,7 +120,7 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-android</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.3</version>
       <type>aar</type> or <type>jar</type>
     </dependency>
     
@@ -127,7 +133,7 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.proximity.blesmart</groupId>
       <artifactId>ble-smart-sdk-android</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.7</version>
       <type>aar</type> or <type>jar</type>
     </dependency>
 
@@ -143,17 +149,16 @@ If you're a **Maven** user you can include the library in your pom.xml:
     </repositories>
     ...
     
-You will also need to add dependency to google play services. Google play services is not available via public maven repositories. You will need to create a package (apklib or aar), load to your local maven repository and then use it as a reference in your pom.xml. The following tool should help: [https://github.com/simpligility/maven-android-sdk-deployer/](https://github.com/simpligility/maven-android-sdk-deployer/).
+You will also need to add dependencies to google play services and support library. Google play services and support library are not available via public maven repositories. You will need to create a package (apklib or aar), load to your local maven repository and then use it as a reference in your pom.xml. The following tool should help: [https://github.com/simpligility/maven-android-sdk-deployer/](https://github.com/simpligility/maven-android-sdk-deployer/).
 
 If rolling old school, you can manually copy all the JARs in your libs folder and add them to your project's dependencies. Your libs folder will have at least the following JARs:
 
-- spotz-sdk-android-3.0.2.jar
-- ble-smart-sdk-android-1.0.5.jar
 - spotz-api-0.2.8.jar
+- ble-smart-sdk-android-1.0.7.jar
+- spotz-sdk-android-3.0.3.jar
 - google-http-client-1.20.0.jar
 - google-http-client-gson-1.20.0.jar
-- gson-2.3.jar
-- ormlite-android-4.48.jar
+- gson-2.4.jar
 - rxjava-1.0.10.jar
 - rxandroid-0.24.0.jar
 - rxjava-async-util-0.21.0.jar
@@ -163,7 +168,7 @@ and also add "google play services lib" library project to your project. For ins
 How to use the SDK
 ==================
 
-**Starting with release 3.0.2 of the SDK, devices that do not support Bluetooth Low Energy (generally Android 4.3 API level 18 or newer) are still able to make use of the Spotz SDK**. But only Geofence and NFC spots can be triggered.
+**Starting with release 3.0.0 of the SDK, devices that do not support Bluetooth Low Energy (generally Android 4.3 API level 18 or newer) are still able to make use of the Spotz SDK**. But only Geofence and NFC spots can be triggered.
 
 There are only 3 actions to implement - **initialize**, **scan**, and **listen**!
 
@@ -189,7 +194,8 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
   2. Define the following service in your AndroidManifest.xml:
 
         <service android:name="com.localz.proximity.ble.services.BleHeartbeat" />
-        <service android:name="com.localz.spotz.sdk.geofence.GeofenceTransitionsIntentService"/>  
+        <service android:name="com.localz.spotz.sdk.geofence.GeofenceTransitionsIntentService"/>
+        <service android:name="com.localz.spotz.sdk.geofence.LocationUpdateHeartbeat"/>
         
   3. Define the following broadcast receivers in your AndroidManifest.xml:
 
@@ -299,7 +305,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
                 true    // you can set this flag to 'true' and the SDK will start scanning automatically after initialisation
         );
 
-The SDK will communicate with Spotz servers, authenticate, and register a device. It will download all spots you registered on the [Spotz console](https://spotz.localz.io). The SDK will handle any changes you've made to your server configuration.
+The SDK will communicate with Spotz servers, authenticate, and register a device. It will download all spots you registered on the [Spotz console](https://console.localz.io). The SDK will handle any changes you've made to your server configuration.
   
 Your project is now ready to start using the Spotz SDK!
 
@@ -442,7 +448,7 @@ If you require greater accuracy and precison, contact the Localz team for a non-
 
 #### Monitoring a subset of spots
 
-You might not want to monitor all spots, but a subset of spots in your application. In this case, on [Spotz console](https://spotz.localz.io) for the spots that you want to monitor, you can define an attribute (or attributes). Later when initialising Spotz Android SDK, you can provide a map of attribute(s) in order to monitor for matching spots only.
+You might not want to monitor all spots, but a subset of spots in your application. In this case, on [Spotz console](https://console.localz.io) for the spots that you want to monitor, you can define an attribute (or attributes). Later when initialising Spotz Android SDK, you can provide a map of attribute(s) in order to monitor for matching spots only.
 In this case, SDK initialization will be similar to the following:  
 
 	Map<String, String> attributes = new HashMap<String, String>();
