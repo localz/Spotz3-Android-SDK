@@ -92,8 +92,6 @@ If you're a **Gradle** user you can easily include the library by specifying it 
     dependencies {
         compile 'com.localz.spotz.sdk:spotz-api:0.2.8'
 
-        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.7@aar'
-        or
         compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.7@jar'
 
         compile 'com.localz.spotz.sdk:spotz-sdk-android:3.0.4@aar'
