@@ -93,6 +93,21 @@
                 <action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_SPOT_EXIT" />
             </intent-filter>
         </receiver>
+
+        <!-- These broadcast receivers are need to be implemented in the application.
+        They will be invoked if device enters or exit a Site. It works similar to Spot enter/exit events.
+        Site object is available via Spotz.EXTRA_SITE extra -->
+        <!--<receiver android:name="com.localz.spotz.sdk.app.receiver.OnEnteredSiteBroadcastReceiver" android:exported="false" >-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_SITE_ENTER" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
+
+        <!--<receiver android:name="com.localz.spotz.sdk.app.receiver.OnExitedSiteBroadcastReceiver" android:exported="false">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.localz.spotz.sdk.app.SPOTZ_ON_SITE_EXIT" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
         
         <!-- This receiver only required if you integrated Spotz platform with 3rd party system.
         The receiver will be invoked when reply is received from 3rd party system. -->
