@@ -21,10 +21,10 @@ public class OnShowNotificationBroadcastReceiver extends BroadcastReceiver {
 
     private static final String TAG = OnShowNotificationBroadcastReceiver.class.getSimpleName();
 
-    public static final String NOTIFICATION_TITLE = "NOTIFICATION_TITLE";
-    public static final String NOTIFICATION_TEXT = "NOTIFICATION_TEXT";
-    public static final String NOTIFICATION_ID = "NOTIFICATION_ID";
-    public static final String NOTIFICATION_ICON = "NOTIFICATION_ICON";
+    static final String NOTIFICATION_TITLE = "NOTIFICATION_TITLE";
+    static final String NOTIFICATION_TEXT = "NOTIFICATION_TEXT";
+    static final String NOTIFICATION_ID = "NOTIFICATION_ID";
+    static final String NOTIFICATION_ICON = "NOTIFICATION_ICON";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -48,8 +48,8 @@ public class OnShowNotificationBroadcastReceiver extends BroadcastReceiver {
                             .setContentTitle(title)
                             .setContentText(text)
                             .setAutoCancel(true)
-                            .setVibrate(new long[]{1000, 1000})
-                            .setLights(Color.RED, 3000, 3000)
+                            .setVibrate(new long[]{1000})
+                            .setLights(Color.YELLOW, 1000, 3000)
                             .setSound(alarmSound)
                             .setContentIntent(resultPendingIntent);
 

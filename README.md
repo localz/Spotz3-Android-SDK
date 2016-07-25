@@ -22,6 +22,14 @@ The Spotz3 Android SDK allows your Android app to detect when it is in range of 
 Changelog
 =========
 
+**1.1.0**
+* Added user activity recognition: still, walking, running/driving.
+* Added configurable scanning modes (via Spotz API/console) based on current app mode (FOREGROUND/BACKGROUND) and user activity (EAGER/NORMAL/PASSIVE).
+* Improved geofence support - large number of geofences using clustering.
+* Improved SDK data refresh - spots and project config.
+* Added changes to capture how long a user/device spent in a spot.
+* Bug fixes.
+
 **1.0.2**
 * Bug fixes.
 * Added a sample proguard config.
@@ -94,13 +102,13 @@ If you're a **Gradle** user you can easily include the library by specifying it 
     }
     ...
     dependencies {
-        compile 'com.localz.spotz.sdk:spotz-api:0.2.9'
+        compile 'com.localz.spotz.sdk:spotz-api:0.2.11'
 
-        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.8@jar'
+        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.9@jar'
 
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.0.5@aar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.1.0@aar'
         or
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.0.5@jar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.1.0@jar'
 
         // additional dependencies required by SDK
         compile 'com.google.android.gms:play-services-location:8.3.0'
@@ -122,20 +130,20 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-android</artifactId>
-      <version>3.0.5</version>
+      <version>3.1.0</version>
       <type>aar</type> or <type>jar</type>
     </dependency>
-    
+
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-api</artifactId>
-      <version>0.2.9</version>
+      <version>0.2.11</version>
     </dependency>
-    
+
     <dependency>
       <groupId>com.localz.proximity.blesmart</groupId>
       <artifactId>ble-smart-sdk-android</artifactId>
-      <version>1.0.8</version>
+      <version>1.0.9</version>
       <type>aar</type> or <type>jar</type>
     </dependency>
 
@@ -150,14 +158,14 @@ If you're a **Maven** user you can include the library in your pom.xml:
         ...
     </repositories>
     ...
-    
+
 You will also need to add dependencies to google play services and support library. Google play services and support library are not available via public maven repositories. You will need to create a package (apklib or aar), load to your local maven repository and then use it as a reference in your pom.xml. The following tool should help: [https://github.com/simpligility/maven-android-sdk-deployer/](https://github.com/simpligility/maven-android-sdk-deployer/).
 
 If rolling old school, you can manually copy all the JARs in your libs folder and add them to your project's dependencies. Your libs folder will have at least the following JARs:
 
-- spotz-api-0.2.9.jar
-- ble-smart-sdk-android-1.0.8.jar
-- spotz-sdk-android-3.0.5.jar
+- spotz-api-0.2.11.jar
+- ble-smart-sdk-android-1.0.9.jar
+- spotz-sdk-android-3.1.0.jar
 - google-http-client-1.20.0.jar
 - google-http-client-gson-1.20.0.jar
 - gson-2.4.jar
@@ -165,7 +173,7 @@ If rolling old school, you can manually copy all the JARs in your libs folder an
 - rxandroid-0.24.0.jar
 - rxjava-async-util-0.21.0.jar
 
-and also add "google play services lib" library project to your project. For instructions refer to [http://developer.android.com/google/play-services/setup.html](http://developer.android.com/google/play-services/setup.html). Select "Using Eclipse with ADT". 
+and also add "google play services lib" library project to your project. For instructions refer to [http://developer.android.com/google/play-services/setup.html](http://developer.android.com/google/play-services/setup.html). Select "Using Eclipse with ADT".
 
 How to use the SDK
 ==================
@@ -190,19 +198,20 @@ There are only 3 actions to implement - **initialize**, **scan**, and **listen**
         <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
         <uses-permission android:name="android.permission.NFC" />
         <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
-        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/> 
+        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if you want to restart monitoring after a phone reboot.
 
-  2. Define the following service in your AndroidManifest.xml:
+  2. Define the following services in your AndroidManifest.xml:
 
         <service android:name="com.localz.proximity.ble.services.BleHeartbeat" />
         <service android:name="com.localz.spotz.sdk.geofence.GeofenceTransitionsIntentService"/>
         <service android:name="com.localz.spotz.sdk.geofence.LocationUpdateHeartbeat"/>
-        
+        <service android:name="com.localz.spotz.sdk.ActivityRecognitionIntentService"/>
+
   3. Define the following broadcast receivers in your AndroidManifest.xml:
 
     3.1.These broadcast receivers are used internally in Spotz SDK. They must be registered in AndroidManifest file (make sure you use your app's package name):
-    
+
         <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFoundReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="*your.app.package.name*.LOCALZ_BLE_SCAN_FOUND" />
@@ -236,7 +245,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
     3.2.These broadcast receivers must be implemented in the application (assuming *com.foo.app* is a package name of your application and *com.foo.app.receivers* is a java package of your receivers).
         They will be invoked if a device enters or exits a spot.
         Example implementation can be found in this sample application. A typical implementation will create a notification.
-        
+
         <receiver android:name="com.foo.app.receivers.OnEnteredSpotBroadcastReceiver" android:exported="false" >
             <intent-filter>
                 <action android:name="com.foo.app.SPOTZ_ON_SPOT_ENTER" />
@@ -268,9 +277,9 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
                 <action android:name="com.foo.app.SPOTZ_ON_SITE_EXIT" />
             </intent-filter>
         </receiver>
-        
+
     3.3.This receiver is only required if you integrated your Spotz Application with a 3rd party system. The receiver will be invoked when a reply is received from a 3rd party system. See section "Integration with 3rd party systems" below:
-    
+
         <receiver android:name="com.foo.app.receivers.OnIntegrationRespondedBroadcastReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="com.foo.app.SPOTZ_ON_INTEGRATION_RESPONDED" />
@@ -278,13 +287,13 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
         </receiver>
 
     3.4.This receiver will be invoked when a phone is rebooted. Register this receiver only if you are required to restart monitoring after reboot.
-   
+
         <receiver android:name="com.localz.spotz.sdk.OnRebootReceiver" android:exported="false">
-            <intent-filter>  
-                <action android:name="android.intent.action.BOOT_COMPLETED" />  
-            </intent-filter>  
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
         </receiver>
-        
+
   4. Initialize the SDK by providing your application ID and application key (as shown on Spotz console):
 
     4.1.You can provide optional spot tags and attributes to limit the spots you are interested in:
@@ -295,66 +304,63 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
 
     4.2.Initialize the SDK
 
-        Spotz.getInstance().initialize(context, // Your context
+        Spotz.getInstance().initialize(context, // Your Android app context
                 "your-application-id",          // Your application ID goes here
                 "your-application-key",         // Your application key goes here
                 new InitializationListenerAdapter() {
                     @Override
                     public void onInitialized() {
-                        // Now that we're initialized, we can start scanning for Spotz here 
+                        // Now that we're initialized, we can start scanning for Spotz here
                     }
                 },
                 true    // you can set this flag to 'true' and the SDK will start scanning automatically after initialisation
         );
 
+It is recommended to call `Spotz.getInstance().initialize()` every time your app is started. This will make sure your app data is up to date.
+
 The SDK will communicate with Spotz servers, authenticate, and register a device. It will download all spots you registered on the [Spotz console](https://console.localz.io). The SDK will handle any changes you've made to your server configuration.
-  
+
 Your project is now ready to start using the Spotz SDK!
 
 ---
 
 ###Scanning for Spots
 
+  The SDK was built to use two application modes: foreground and background, and three scanning modes: eager, normal and passive. A combination of an application mode and a scanning mode defines how quickly the SDK responds to beacons and geofences.
+  Scanning timings and power mode for each mode can be configured using Spotz API (console).
+
+  Application mode depends on which SDK method was used to start scanning: `startForegroundScanning` or `startBackgroundScanning`.
+  Scanning mode depends on current user/device activity. If activity recognition is not in use, normal scanning mode is used.
+
   To start scanning for spots, use one of these methods:
-  
+
         // Start scanning for spots in the foreground. These calls should only be used when the app is in the foreground.
-        // When any 'start***Scanning' method is called - SDK will start to continuously scan for Geofences and NFC triggers.
+        // When any 'startForegroundScanning' method is called - SDK will start to continuously scan for Geofences and NFC triggers.
         // The difference between various 'start***Scanning' methods is only in the way BLE beacons are scanned.
 
-        // This will schedule SDK to 'wake up' every 'scanIntervalMs' milliseconds and scan for beacons for a period of 'scanDurationMs' milliseconds.
-        // Unlike background scanning - foreground scanning may be used with 'scanIntervalMs' less than 60000 milliseconds
-        Spotz.getInstance().startForegroundScanning(context, scanIntervalMs, scanDurationMs);
-
-        // Similar to the above, but 'scanIntervalMs' and 'scanDurationMs' are determined by provided ScanMode.
-        Spotz.getInstance().startForegroundScanning(context, scanMode);
-
-        // This call will try to use previously used parameters or defaults.
+        // This will schedule SDK to 'wake up' every 'scanInterval' milliseconds and scan for beacons for a period of 'scanDuration' milliseconds.
+        // Unlike background scanning - foreground scanning may be used with 'scanInterval' less than 60000 milliseconds
+        // 'scanInterval' and 'scanDuration' may be configured in Spotz console
         Spotz.getInstance().startForegroundScanning(context);
 
-        // This will schedule SDK to 'wake up' every 'scanIntervalMs' milliseconds and scan for beacons for a period of 'scanDurationMs' milliseconds.
-        // 'scanIntervalMs' of less than 60000 milliseconds is unlikely to be honoured by Android runtime, and will most likely be set to 60000 milliseconds
-        Spotz.getInstance().startBackgroundScanning(context, scanIntervalMs, scanDurationMs);
-
-        // Similar to the above, but 'scanIntervalMs' and 'scanDurationMs' are determined by provided ScanMode.
-        Spotz.getInstance().startBackgroundScanning(context, scanMode);
-
-        // This call will try to use previously used parameters or defaults.
+        // This will schedule SDK to 'wake up' every 'scanInterval' milliseconds and scan for beacons for a period of 'scanDuration' milliseconds.
+        // 'scanInterval' of less than 60000 milliseconds is unlikely to be honoured by Android runtime, and will most likely be set to 60000 milliseconds
         Spotz.getInstance().startBackgroundScanning(context);
 
-        // One time scan for beacons for a period of 'scanDurationMs' milliseconds. Does not start Geofence or NFC scanning.
-        Spotz.getInstance().scanOnce(context, scanDurationMs);
+        // One time scan for beacons for a period of 'scanDuration' milliseconds. Does not start Geofence or NFC scanning.
+        Spotz.getInstance().scanOnce(context, scanDuration);
 
         // Spotz.ScanMode.NORMAL - normal scanning - ideal for general use
         // Spotz.ScanMode.EAGER - eager scanning - when fast Spotz engagement response is required, or if devices are expected to move in and out of range in a short time
         // Spotz.ScanMode.PASSIVE - passive scanning - use if battery conservation is more important than engagement, or if devices are expected to remain in your Spotz for longer periods
-  
+
   The SDK will scan for beacons while your app is in the background.
-  
+
   To stop scanning for spots:
-  
-        Spotz.getInstance().stopScanningBeacons(context);
-        
-  To conserve battery, always stop scanning when not needed.
+
+        Spotz.getInstance().stopScanningForSpotz(applicationContext);
+
+  To conserve battery, always stop scanning when not required.
 
   Public utility methods:
 
@@ -444,9 +450,9 @@ Note: calculation of distance is based on rssi and txPower values as broadcasted
 	if (ratio < 1.0) {
 		distance = (float) Math.pow(ratio, 10);
 	} else {
-		distance = (float) ((0.42093) * Math.pow(ratio, 6.9476) + 0.54992);
+		distance = (float) ((0.89976) * Math.pow(ratio, 7.7095) + 0.111);
 	}
-If you require greater accuracy and precison, contact the Localz team for a non-public SDK that includes advanced positioning features including dead reckoning and accelerometer augmented positioning. 
+If you require greater accuracy and precision, contact the Localz team for a non-public SDK that includes advanced positioning features including dead reckoning and accelerometer augmented positioning.
 
 #### Monitoring a subset of spots
 

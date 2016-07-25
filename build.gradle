@@ -49,9 +49,9 @@ android {
 dependencies {
     compile 'com.android.support:support-v4:23.1.1'
 
-    compile 'com.localz.spotz.sdk:spotz-api:0.2.9'
-    compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.8@jar'
-    compile 'com.localz.spotz.sdk:spotz-sdk-android:3.0.5@jar'
+    compile 'com.localz.spotz.sdk:spotz-api:0.2.11'
+    compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.9@jar'
+    compile 'com.localz.spotz.sdk:spotz-sdk-android:3.1.0@jar'
 
     compile 'com.google.code.gson:gson:2.4'
     compile 'com.google.http-client:google-http-client:1.20.0'
