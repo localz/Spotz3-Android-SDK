@@ -27,7 +27,7 @@ Changelog
 * Added configurable scanning modes (via Spotz API/console) based on current app mode (FOREGROUND/BACKGROUND) and user activity (EAGER/NORMAL/PASSIVE).
 * Improved geofence support - large number of geofences using clustering.
 * Improved SDK data refresh - spots and project config.
-* Added changes to capture how long a user/device spent in a spot.
+* Added changes to capture how long a user/device spends in a spot.
 * Bug fixes.
 
 **1.0.2**
@@ -104,6 +104,8 @@ If you're a **Gradle** user you can easily include the library by specifying it 
     dependencies {
         compile 'com.localz.spotz.sdk:spotz-api:0.2.11'
 
+        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.9@aar'
+        or
         compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.9@jar'
 
         compile 'com.localz.spotz.sdk:spotz-sdk-android:3.1.0@aar'
@@ -197,8 +199,8 @@ There are only 3 actions to implement - **initialize**, **scan**, and **listen**
         <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
         <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
         <uses-permission android:name="android.permission.NFC" />
-        <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
         <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+        <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
 Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if you want to restart monitoring after a phone reboot.
 
   2. Define the following services in your AndroidManifest.xml:
@@ -210,7 +212,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
 
   3. Define the following broadcast receivers in your AndroidManifest.xml:
 
-    3.1.These broadcast receivers are used internally in Spotz SDK. They must be registered in AndroidManifest file (make sure you use your app's package name):
+    3.1.These broadcast receivers are used internally in Spotz SDK. They must be registered in AndroidManifest file (**make sure you use your app's package name**):
 
         <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFoundReceiver" android:exported="false">
             <intent-filter>
@@ -326,35 +328,31 @@ Your project is now ready to start using the Spotz SDK!
 
 ###Scanning for Spots
 
-  The SDK was built to use two application modes: foreground and background, and three scanning modes: eager, normal and passive. A combination of an application mode and a scanning mode defines how quickly the SDK responds to beacons and geofences.
+  The SDK was built to use two application modes: *foreground* and *background*, and three scanning modes: *eager*, *normal* and *passive*. A combination of an application mode and a scanning mode defines how quickly the SDK responds to beacons and geofences.
   Scanning timings and power mode for each mode can be configured using Spotz API (console).
 
   Application mode depends on which SDK method was used to start scanning: `startForegroundScanning` or `startBackgroundScanning`.
-  Scanning mode depends on current user/device activity. If activity recognition is not in use, normal scanning mode is used.
+  Scanning mode depends on current user/device activity. If activity recognition is not in use, *normal* scanning mode is used.
 
   To start scanning for spots, use one of these methods:
 
-        // Start scanning for spots in the foreground. These calls should only be used when the app is in the foreground.
-        // When any 'startForegroundScanning' method is called - SDK will start to continuously scan for Geofences and NFC triggers.
-        // The difference between various 'start***Scanning' methods is only in the way BLE beacons are scanned.
-
-        // This will schedule SDK to 'wake up' every 'scanInterval' milliseconds and scan for beacons for a period of 'scanDuration' milliseconds.
-        // Unlike background scanning - foreground scanning may be used with 'scanInterval' less than 60000 milliseconds
-        // 'scanInterval' and 'scanDuration' may be configured in Spotz console
         Spotz.getInstance().startForegroundScanning(context);
 
-        // This will schedule SDK to 'wake up' every 'scanInterval' milliseconds and scan for beacons for a period of 'scanDuration' milliseconds.
-        // 'scanInterval' of less than 60000 milliseconds is unlikely to be honoured by Android runtime, and will most likely be set to 60000 milliseconds
+  This call should only be used when the app is in the foreground. When `startForegroundScanning` method is called - SDK will start to continuously scan for Geofences and NFC triggers.
+  This will also schedule SDK to 'wake up' every `scanInterval` milliseconds and scan for beacons for a period of `scanDuration` milliseconds.
+  Unlike background scanning - foreground scanning may be used with `scanInterval` less than 60000 milliseconds.
+  `scanInterval` and `scanDuration` may be configured in Spotz console.
+
         Spotz.getInstance().startBackgroundScanning(context);
 
-        // One time scan for beacons for a period of 'scanDuration' milliseconds. Does not start Geofence or NFC scanning.
+  Similar to the above, when `startBackgroundScanning` method is called, SDK will start to continuously scan for Geofences and NFC triggers. This will also schedule SDK to 'wake up' every `scanInterval` milliseconds and scan for beacons for a period of `scanDuration` milliseconds.
+  `scanInterval` of less than 60000 milliseconds is unlikely to be honoured by Android runtime, and will most likely be set to 60000 milliseconds
+
         Spotz.getInstance().scanOnce(context, scanDuration);
 
-        // Spotz.ScanMode.NORMAL - normal scanning - ideal for general use
-        // Spotz.ScanMode.EAGER - eager scanning - when fast Spotz engagement response is required, or if devices are expected to move in and out of range in a short time
-        // Spotz.ScanMode.PASSIVE - passive scanning - use if battery conservation is more important than engagement, or if devices are expected to remain in your Spotz for longer periods
+  One time scan for beacons for a period of `scanDuration` milliseconds. Does not start Geofence or NFC scanning.
 
-  The SDK will scan for beacons while your app is in the background.
+  The SDK will continue to scan for beacons while your app is in the background.
 
   To stop scanning for spots:
 
@@ -362,62 +360,80 @@ Your project is now ready to start using the Spotz SDK!
 
   To conserve battery, always stop scanning when not required.
 
-  Public utility methods:
+###Public utility methods:
 
-        // Check if the SDK is initialized
+  Check if the SDK is initialized:
+
         Spotz.getInstance().isInitialized(context);
 
-        // Check if the SDK is currently scanning for spots
+  Check if the SDK is currently scanning for spots:
+
         Spotz.getInstance().isScanningForSpotz(context);
 
-        // Check if Bluetooth LE is supported on this device.
+  Check if Bluetooth LE is supported on this device:
+
         Spotz.getInstance().hasBleSupport(context);
 
-        // Check if Bluetooth LE is enabled on this device.
+  Check if Bluetooth LE is enabled on this device:
+
         Spotz.getInstance().isBleEnabled(context);
 
-        // Check if NFC is supported on this device.
+  Check if NFC is supported on this device:
+
         Spotz.getInstance().hasNfcSupport(context);
 
-        // Check if NFC is enabled on this device.
+  Check if NFC is enabled on this device:
+
         Spotz.getInstance().isNfcEnabled(context);
 
-        // Check if Location service is supported on this device.
+  Check if Location service is supported on this device:
+
         Spotz.getInstance().hasLocationSupport(context);
 
-        // Check if Location service is enabled on this device.
+  Check if Location service is enabled on this device:
+
         Spotz.getInstance().isLocationEnabled(context);
 
-        // Get a registered device id
+  Get a registered device id:
+
         Spotz.getInstance().getDeviceId(context);
 
-        // Get Project details
+  Get Project details:
+
         Spotz.getInstance().getProject(context);
 
-        // Get current/active Site details
+  Get current/active Site details:
+
         Spotz.getInstance().getCurrentSite(context);
 
-        // Get a list of all Project Sites
+  Get a list of all Project Sites:
+
         Spotz.getInstance().getAvailableSites(context);
 
-        // Get a list of Site Spots (if a Site is not an active Site this method may return an empty list)
+  Get a list of Site Spots (if a Site is not an active Site this method may return an empty list):
+
         Spotz.getInstance().getSiteSpots(context, siteId);
 
-        // If set to 'true' - will output all debug logs, otherwise - not.
+  If set to 'true' - will output all debug logs, otherwise - not:
+
         Spotz.getInstance().setDebug(debug);
 
-  Updating Device specific data:
+###Updating Device specific data
 
-        // Provide a user identity to be associated with a registered device
+  Provide a user identity to be associated with a registered device:
+
         Spotz.getInstance().setDeviceIdentity(context, userIdentity, responseListener);
 
-        // Delete a associated user identity from a registered device
+  Delete a associated user identity from a registered device:
+
         Spotz.getInstance().deleteDeviceIdentity(context, responseListener);
 
-        // Set device attributes
+  Set device attributes:
+
         Spotz.getInstance().setDeviceAttributes(context, attributes, responseListener);
 
-        // Set device extension data
+  Set device extension data:
+
         Spotz.getInstance().setDeviceExtensions(context, extensions, responseListener);
 
 ---
@@ -558,4 +574,4 @@ For bugs, feature requests, or other questions, [file an issue](https://github.c
 License
 =======
 
-Copyright 2015 [Localz Pty Ltd](http://localz.co/)
+Copyright 2016 [Localz Pty Ltd](http://localz.co/)
