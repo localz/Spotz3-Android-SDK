@@ -23,6 +23,10 @@ Changelog
 =========
 
 **1.1.0**
+* Added changes to limit the minimum allowed beacon scan interval to 100ms.
+* Small bug fix.
+
+**1.1.0**
 * Added user activity recognition: still, walking, running/driving.
 * Added configurable scanning modes (via Spotz API/console) based on current app mode (FOREGROUND/BACKGROUND) and user activity (EAGER/NORMAL/PASSIVE).
 * Improved geofence support - large number of geofences using clustering.
@@ -108,9 +112,9 @@ If you're a **Gradle** user you can easily include the library by specifying it 
         or
         compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.9@jar'
 
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.1.0@aar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.1.1@aar'
         or
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.1.0@jar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.1.1@jar'
 
         // additional dependencies required by SDK
         compile 'com.google.android.gms:play-services-location:8.3.0'
@@ -132,7 +136,7 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-android</artifactId>
-      <version>3.1.0</version>
+      <version>3.1.1</version>
       <type>aar</type> or <type>jar</type>
     </dependency>
 
@@ -167,7 +171,7 @@ If rolling old school, you can manually copy all the JARs in your libs folder an
 
 - spotz-api-0.2.11.jar
 - ble-smart-sdk-android-1.0.9.jar
-- spotz-sdk-android-3.1.0.jar
+- spotz-sdk-android-3.1.1.jar
 - google-http-client-1.20.0.jar
 - google-http-client-gson-1.20.0.jar
 - gson-2.4.jar
