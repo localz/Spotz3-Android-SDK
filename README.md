@@ -22,7 +22,7 @@ The Spotz3 Android SDK allows your Android app to detect when it is in range of 
 Changelog
 =========
 
-**1.1.0**
+**1.1.1**
 * Added changes to limit the minimum allowed beacon scan interval to 100ms.
 * Small bug fix.
 
