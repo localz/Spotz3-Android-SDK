@@ -220,31 +220,31 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
 
         <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFoundReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="*your.app.package.name*.LOCALZ_BLE_SCAN_FOUND" />
+                <action android:name="${applicationId}.LOCALZ_BLE_SCAN_FOUND" />
             </intent-filter>
         </receiver>
 
         <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFinishedReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="*your.app.package.name*.LOCALZ_BLE_SCAN_FINISH" />
+                <action android:name="${applicationId}.LOCALZ_BLE_SCAN_FINISH" />
             </intent-filter>
         </receiver>
 
         <receiver android:name="com.localz.spotz.sdk.OnGeofenceEnterBroadcastReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="*your.app.package.name*.LOCALZ_GEOFENCE_TRANSITION_ENTER" />
+                <action android:name="${applicationId}.LOCALZ_GEOFENCE_TRANSITION_ENTER" />
             </intent-filter>
         </receiver>
 
         <receiver android:name="com.localz.spotz.sdk.OnGeofenceExitBroadcastReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="*your.app.package.name*.LOCALZ_GEOFENCE_TRANSITION_EXIT" />
+                <action android:name="${applicationId}.LOCALZ_GEOFENCE_TRANSITION_EXIT" />
             </intent-filter>
         </receiver>
 
         <receiver android:name="com.localz.spotz.sdk.OnNfcFoundReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="*your.app.package.name*.LOCALZ_NFC_ENTER" />
+                <action android:name="${applicationId}.LOCALZ_NFC_ENTER" />
             </intent-filter>
         </receiver>
 
@@ -252,43 +252,43 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
         They will be invoked if a device enters or exits a spot.
         Example implementation can be found in this sample application. A typical implementation will create a notification.
 
-        <receiver android:name="com.foo.app.receivers.OnEnteredSpotBroadcastReceiver" android:exported="false" >
+        <receiver android:name=".receivers.OnEnteredSpotBroadcastReceiver" android:exported="false" >
             <intent-filter>
-                <action android:name="com.foo.app.SPOTZ_ON_SPOT_ENTER" />
+                <action android:name="${applicationId}.SPOTZ_ON_SPOT_ENTER" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.foo.app.receivers.OnExitedSpotBroadcastReceiver" android:exported="false">
+        <receiver android:name=".receivers.OnExitedSpotBroadcastReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="com.foo.app.SPOTZ_ON_SPOT_EXIT" />
+                <action android:name="${applicationId}.SPOTZ_ON_SPOT_EXIT" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.foo.app.receivers.OnSpotDistanceUpdatedBroadcastReceiver" android:exported="false">
+        <receiver android:name=".receivers.OnSpotDistanceUpdatedBroadcastReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="com.foo.app.SPOT_BEACON_DISTANCE_UPDATED" />
+                <action android:name="${applicationId}.SPOT_BEACON_DISTANCE_UPDATED" />
             </intent-filter>
         </receiver>
 
         *Additionally, your app can register for events triggered when a device enters or exits a Site.*
 
-        <receiver android:name="com.foo.app.receivers.OnEnteredSiteBroadcastReceiver" android:exported="false" >
+        <receiver android:name=".receivers.OnEnteredSiteBroadcastReceiver" android:exported="false" >
             <intent-filter>
-                <action android:name="com.foo.app.SPOTZ_ON_SITE_ENTER" />
+                <action android:name="${applicationId}.SPOTZ_ON_SITE_ENTER" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.foo.app.receivers.OnExitedSiteBroadcastReceiver" android:exported="false">
+        <receiver android:name=".receivers.OnExitedSiteBroadcastReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="com.foo.app.SPOTZ_ON_SITE_EXIT" />
+                <action android:name="${applicationId}.SPOTZ_ON_SITE_EXIT" />
             </intent-filter>
         </receiver>
 
     3.3.This receiver is only required if you integrated your Spotz Application with a 3rd party system. The receiver will be invoked when a reply is received from a 3rd party system. See section "Integration with 3rd party systems" below:
 
-        <receiver android:name="com.foo.app.receivers.OnIntegrationRespondedBroadcastReceiver" android:exported="false">
+        <receiver android:name=".receivers.OnIntegrationRespondedBroadcastReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="com.foo.app.SPOTZ_ON_INTEGRATION_RESPONDED" />
+                <action android:name="${applicationId}.SPOTZ_ON_INTEGRATION_RESPONDED" />
             </intent-filter>
         </receiver>
 
