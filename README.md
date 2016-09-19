@@ -22,6 +22,9 @@ The Spotz3 Android SDK allows your Android app to detect when it is in range of 
 Changelog
 =========
 
+**1.2.0**
+* Added initial support for "Closest Spot" notifications (experimental).
+
 **1.1.1**
 * Added changes to limit the minimum allowed beacon scan interval to 100ms.
 * Small bug fix.
@@ -112,9 +115,9 @@ If you're a **Gradle** user you can easily include the library by specifying it 
         or
         compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.9@jar'
 
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.1.1@aar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.2.0@aar'
         or
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.1.1@jar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.2.0@jar'
 
         // additional dependencies required by SDK
         compile 'com.google.android.gms:play-services-location:8.3.0'
@@ -136,7 +139,7 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-android</artifactId>
-      <version>3.1.1</version>
+      <version>3.2.0</version>
       <type>aar</type> or <type>jar</type>
     </dependency>
 
@@ -171,7 +174,7 @@ If rolling old school, you can manually copy all the JARs in your libs folder an
 
 - spotz-api-0.2.11.jar
 - ble-smart-sdk-android-1.0.9.jar
-- spotz-sdk-android-3.1.1.jar
+- spotz-sdk-android-3.2.0.jar
 - google-http-client-1.20.0.jar
 - google-http-client-gson-1.20.0.jar
 - gson-2.4.jar
@@ -473,6 +476,66 @@ Note: calculation of distance is based on rssi and txPower values as broadcasted
 		distance = (float) ((0.89976) * Math.pow(ratio, 7.7095) + 0.111);
 	}
 If you require greater accuracy and precision, contact the Localz team for a non-public SDK that includes advanced positioning features including dead reckoning and accelerometer augmented positioning.
+
+#### Closest Spot Notification
+
+There may be a need to only show the closest spot to the device at a particular time. This could be because you're in a busy environment with lots of beacons, and the information you’re trying to present is only applicable to the spot that's nearby.
+The SDK provides an easy way to identify which spot is the closest. Just enable "smoothing" mode:
+
+    Spotz.getInstance().enableSmoothing(getApplicationContext(), true);
+And register a receiver for *${applicationId}.SPOTZ_ON_CLOSEST_BEACON* notification:
+
+    <receiver android:name=".receivers.OnClosestSpotUpdatedBroadcastReceiver" android:exported="false">
+        <intent-filter>
+            <action android:name="${applicationId}.SPOTZ_ON_CLOSEST_BEACON" />
+        </intent-filter>
+    </receiver>
+or in the code:
+
+    IntentFilter intentFilter = new IntentFilter(getPackageName() + Spotz.BROADCAST_CLOSEST_BEACON);
+    registerReceiver(new OnClosestSpotUpdatedBroadcastReceiver(), intentFilter);
+The broadcast receiver then may access the closest spot:
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Spot spot = (Spot) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
+        if (spot != null) {
+            // do something great with this spot
+        } else {
+            // no closest spots found, i.e all spots are out of range
+        }
+    }
+
+##### Set the Spot to 'Ranging'
+
+Closest Spot feature only works with "ranging" spots. To ensure the spot is set to ranging: go to Spotz console -> [Project name] -> Application Setup -> Spots -> [Spot name] -> Spot Triggers -> Configuration, and set the Spot beacon ranging to 'Far' distance.
+
+##### Set the Cut-off Distances
+
+The cutoff distance will help in filtering out the spots that you are not interested in detecting at a particular location. We have developed a tool that will assist you in setting this up.
+
+###### Using Beacon Scanner App
+
+Send us an email to get access to the beta version of the 'Beacon Scanner' app and login to your account.
+
+###### Manually
+
+Each spot will need to be configured with a cutoff distance. Since each hardware device may read the beacon differently, using the below configuration, we can set out the 'effective range' for each spot.
+
+Add the following attribute to a spot:
+
+    name: cufoff_distance
+    value: <the value detected by the beacon scanner>
+
+To configure cutoff distance for Android devices:
+
+    name: cufoff_distance/android
+    value: <the value detected by the beacon scanner>
+
+To configure cutoff distance for a specific device:
+
+    name: "cutoff_distance/" + Build.MANUFACTURER + "/" + Build.MODEL
+    value: <the value detected by the beacon scanner>
 
 #### Monitoring a subset of spots
 

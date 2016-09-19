@@ -49,9 +49,11 @@ public class MainActivity extends Activity {
     private OnEnterOrExitBroadcastReceiver enterOrExitSpotBroadcastReceiver;
     // This BroadcastReceiver is to be notified of "distance-to-spot" change when a device is within a "ranging" spot.
     private OnSpotDistanceUpdatedBroadcastReceiver spotDistanceUpdatedBroadcastReceiver;
+    private OnClosestSpotUpdatedBroadcastReceiver closestSpotUpdatedBroadcastReceiver;
 
     // Tracks ids of the spots that device is in
     private SpotzMap inSpotMap;
+    private String closestSpotId;
     private TextView statusText;
     private Button startStop;
 
@@ -137,6 +139,7 @@ public class MainActivity extends Activity {
             statusText.setVisibility(View.VISIBLE);
             startStop.setVisibility(View.INVISIBLE);
 
+            Spotz.getInstance().enableSmoothing(getApplicationContext(), true);
             Spotz.getInstance().initialize(getApplicationContext(),
                     "your-application-id", // Your application ID goes here
                     "your-client-key", // Your client key goes here
@@ -231,6 +234,13 @@ public class MainActivity extends Activity {
             registerReceiver(spotDistanceUpdatedBroadcastReceiver, intentFilter);
         }
 
+        // Register a receiver to update UI when the closest spot is identified
+        if (closestSpotUpdatedBroadcastReceiver == null) {
+            closestSpotUpdatedBroadcastReceiver = new OnClosestSpotUpdatedBroadcastReceiver();
+            IntentFilter intentFilter = new IntentFilter(getPackageName() + Spotz.BROADCAST_CLOSEST_BEACON);
+            registerReceiver(closestSpotUpdatedBroadcastReceiver, intentFilter);
+        }
+
         init();
     }
 
@@ -270,6 +280,15 @@ public class MainActivity extends Activity {
             try {
                 unregisterReceiver(spotDistanceUpdatedBroadcastReceiver);
                 spotDistanceUpdatedBroadcastReceiver = null;
+            } catch (Exception e) {
+            }
+        }
+
+        // If this activity is destroyed (sent to background) we want to unregister receiver.
+        if (closestSpotUpdatedBroadcastReceiver != null) {
+            try {
+                unregisterReceiver(closestSpotUpdatedBroadcastReceiver);
+                closestSpotUpdatedBroadcastReceiver = null;
             } catch (Exception e) {
             }
         }
@@ -367,6 +386,23 @@ public class MainActivity extends Activity {
             Spot spot = (Spot) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
             Log.d(TAG, "Spot distance updated " + spot.name);
             new SpotzMap(context).put(spot.spotId, spot);
+            adjustUI();
+        }
+    }
+
+    /**
+     * Receive notifications when the closest spot is identified.
+     */
+    public class OnClosestSpotUpdatedBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Spot spot = (Spot) intent.getSerializableExtra(Spotz.EXTRA_SPOTZ);
+            if (spot != null) {
+                closestSpotId = spot.spotId;
+            } else {
+                closestSpotId = null;
+            }
             adjustUI();
         }
     }
@@ -540,6 +576,9 @@ public class MainActivity extends Activity {
             TextView spotName = (TextView) view.findViewById(R.id.spot_name);
             TextView trigger = (TextView) view.findViewById(R.id.trigger);
             spotName.setText("Spot name: " + spot.name);
+            if (closestSpotId != null && spot.spotId.equals(closestSpotId)) {
+                spotName.setText("Spot name: " + spot.name + " (* closest)");
+            }
             trigger.setVisibility(View.VISIBLE);
             if (spot.enteredBeacon != null) {
                 StringBuilder builder = new StringBuilder();
@@ -561,6 +600,13 @@ public class MainActivity extends Activity {
 
         @Override
         public int compare(Spot spot1, Spot spot2) {
+            if (closestSpotId != null) {
+                if (closestSpotId.equals(spot1.spotId)) {
+                    return -1;
+                } else if (closestSpotId.equals(spot2.spotId)) {
+                    return 1;
+                }
+            }
             return spot1.name.compareTo(spot2.name);
         }
     }
