@@ -251,7 +251,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
             </intent-filter>
         </receiver>
 
-    3.2.These broadcast receivers must be implemented in the application (assuming *com.foo.app* is a package name of your application and *com.foo.app.receivers* is a java package of your receivers).
+    3.2.These broadcast receivers must be implemented in the application.
         They will be invoked if a device enters or exits a spot.
         Example implementation can be found in this sample application. A typical implementation will create a notification.
 
@@ -602,9 +602,9 @@ Should you wish to pass a value ONLY to one 3rd party system, use setDeviceExten
 
 If you would like to re-use the response from your Integrations, you will need to register a receiver for the Integration response:
 
-    <receiver android:name="com.foo.app.receivers.OnIntegrationRespondedBroadcastReceiver" android:exported="false">
+    <receiver android:name=".receivers.OnIntegrationRespondedBroadcastReceiver" android:exported="false">
         <intent-filter>
-            <action android:name="com.foo.app.SPOTZ_ON_INTEGRATION_RESPONDED" />
+            <action android:name="${applicationId}.SPOTZ_ON_INTEGRATION_RESPONDED" />
         </intent-filter>
     </receiver>
 
