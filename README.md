@@ -641,4 +641,4 @@ For bugs, feature requests, or other questions, [file an issue](https://github.c
 License
 =======
 
-Copyright 2016 [Localz Pty Ltd](http://localz.co/)
+Copyright 2017 [Localz Pty Ltd](http://localz.co/)
