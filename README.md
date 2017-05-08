@@ -22,6 +22,9 @@ The Spotz3 Android SDK allows your Android app to detect when it is in range of 
 Changelog
 =========
 
+**1.3.0**
+* Bug fixes. Performance improvements.
+
 **1.2.0**
 * Added initial support for "Closest Spot" notifications (experimental).
 
@@ -109,19 +112,19 @@ If you're a **Gradle** user you can easily include the library by specifying it 
     }
     ...
     dependencies {
-        compile 'com.localz.spotz.sdk:spotz-api:0.2.11'
+        compile 'com.localz.spotz.sdk:spotz-api:0.3.0'
 
         compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.9@aar'
         or
         compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.9@jar'
 
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.2.0@aar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.3.0@aar'
         or
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.2.0@jar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.3.0@jar'
 
         // additional dependencies required by SDK
         compile 'com.google.android.gms:play-services-location:8.3.0'
-        compile 'com.android.support:support-v4:23.1.1'
+        compile 'com.android.support:support-v4:23.2.1'
 
         compile 'com.google.code.gson:gson:2.4'
         compile 'com.google.http-client:google-http-client:1.20.0'
@@ -139,14 +142,14 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-android</artifactId>
-      <version>3.2.0</version>
+      <version>3.3.0</version>
       <type>aar</type> or <type>jar</type>
     </dependency>
 
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-api</artifactId>
-      <version>0.2.11</version>
+      <version>0.3.0</version>
     </dependency>
 
     <dependency>
@@ -172,9 +175,9 @@ You will also need to add dependencies to google play services and support libra
 
 If rolling old school, you can manually copy all the JARs in your libs folder and add them to your project's dependencies. Your libs folder will have at least the following JARs:
 
-- spotz-api-0.2.11.jar
+- spotz-api-0.3.0.jar
 - ble-smart-sdk-android-1.0.9.jar
-- spotz-sdk-android-3.2.0.jar
+- spotz-sdk-android-3.3.0.jar
 - google-http-client-1.20.0.jar
 - google-http-client-gson-1.20.0.jar
 - gson-2.4.jar
