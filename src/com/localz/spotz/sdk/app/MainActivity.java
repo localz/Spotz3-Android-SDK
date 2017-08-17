@@ -141,8 +141,8 @@ public class MainActivity extends Activity {
 
             Spotz.getInstance().enableSmoothing(getApplicationContext(), true);
             Spotz.getInstance().initialize(getApplicationContext(),
-                    "2PBJ9YOBn9bUvfBcXfJWTXT3IAfYhiD85NoP6000", // Your application ID goes here
-                    "M86PqOq4S7L5cI3swdgMu15I66UewGqhuGczfeZg", // Your client key goes here
+                    "your-application-id", // Your application ID goes here
+                    "your-client-key", // Your client key goes here
                     new InitializationListenerAdapter() {
                         @Override
                         public void onInitialized() {
