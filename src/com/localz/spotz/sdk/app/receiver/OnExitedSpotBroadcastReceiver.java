@@ -33,6 +33,7 @@ public class OnExitedSpotBroadcastReceiver extends BroadcastReceiver {
         new SpotzMap(context).remove(spot.spotId);
 
         Intent notificationIntent = new Intent(context.getPackageName() + MainActivity.SPOT_ENTERED_OR_EXITED);
+        notificationIntent.setPackage(context.getPackageName());
         notificationIntent.putExtra("SPOT_ID", spot.spotId);
         notificationIntent.putExtra("EVENT", "SPOT_ENTER");
         notificationIntent.putExtra(OnShowNotificationBroadcastReceiver.NOTIFICATION_ID, NOTIFICATION_ID);

@@ -36,7 +36,7 @@
         android:text="@string/message_initializing"
         android:textColor="#f1c40f"
         android:textSize="36sp"
-        localz:font="roboto_thin" />
+        localz:customFont="roboto_thin" />
 
     <LinearLayout
         android:id="@+id/footer"

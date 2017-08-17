@@ -14,6 +14,8 @@ import android.util.Log;
 import com.localz.spotz.sdk.app.MainActivity;
 import com.localz.spotz.sdk.app.R;
 
+import static com.localz.spotz.sdk.app.SpotzApplication.NOTIFICATION_CHANNEL_ID;
+
 /**
  * Displays Spot data in the notification bar when the app is running in the background.
  */
@@ -37,18 +39,19 @@ public class OnShowNotificationBroadcastReceiver extends BroadcastReceiver {
 
         if (title != null && text != null) {
             Intent notificationIntent = new Intent(context, MainActivity.class);
+            notificationIntent.setPackage(context.getPackageName());
 
             PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
             NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(context)
+                    new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                             .setSmallIcon(icon)
                             .setContentTitle(title)
                             .setContentText(text)
                             .setAutoCancel(true)
-                            .setVibrate(new long[]{1000})
+                            .setVibrate(new long[]{100, 200})
                             .setLights(Color.YELLOW, 1000, 3000)
                             .setSound(alarmSound)
                             .setContentIntent(resultPendingIntent);
