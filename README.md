@@ -372,19 +372,19 @@ Your project is now ready to start using the Spotz SDK!
 
   To start scanning for spots, use one of these methods:
 
-        Spotz.getInstance().startForegroundScanning(context);
+    Spotz.getInstance().startForegroundScanning(context);
 
   This call should only be used when the app is in the foreground. When `startForegroundScanning` method is called - SDK will start to continuously scan for Geofences and NFC triggers.
   This will also schedule SDK to 'wake up' every `scanInterval` milliseconds and scan for beacons for a period of `scanDuration` milliseconds.
   Unlike background scanning - foreground scanning may be used with `scanInterval` less than 60000 milliseconds.
   `scanInterval` and `scanDuration` may be configured in Spotz console.
 
-        Spotz.getInstance().startBackgroundScanning(context);
+    Spotz.getInstance().startBackgroundScanning(context);
 
   Similar to the above, when `startBackgroundScanning` method is called, SDK will start to continuously scan for Geofences and NFC triggers. This will also schedule SDK to 'wake up' every `scanInterval` milliseconds and scan for beacons for a period of `scanDuration` milliseconds.
   `scanInterval` of less than 60000 milliseconds is unlikely to be honoured by Android runtime, and will most likely be set to 60000 milliseconds
 
-        Spotz.getInstance().scanOnce(context, scanDuration);
+    Spotz.getInstance().scanOnce(context, scanDuration);
 
   One time scan for beacons for a period of `scanDuration` milliseconds. Does not start Geofence or NFC scanning.
 
@@ -392,7 +392,7 @@ Your project is now ready to start using the Spotz SDK!
 
   To stop scanning for spots:
 
-        Spotz.getInstance().stopScanningForSpotz(applicationContext);
+    Spotz.getInstance().stopScanningForSpotz(applicationContext);
 
   To conserve battery, always stop scanning when not required.
 
@@ -400,77 +400,77 @@ Your project is now ready to start using the Spotz SDK!
 
   Check if the SDK is initialized:
 
-        Spotz.getInstance().isInitialized(context);
+    Spotz.getInstance().isInitialized(context);
 
   Check if the SDK is currently scanning for spots:
 
-        Spotz.getInstance().isScanningForSpotz(context);
+    Spotz.getInstance().isScanningForSpotz(context);
 
   Check if Bluetooth LE is supported on this device:
 
-        Spotz.getInstance().hasBleSupport(context);
+    Spotz.getInstance().hasBleSupport(context);
 
   Check if Bluetooth LE is enabled on this device:
 
-        Spotz.getInstance().isBleEnabled(context);
+    Spotz.getInstance().isBleEnabled(context);
 
   Check if NFC is supported on this device:
 
-        Spotz.getInstance().hasNfcSupport(context);
+    Spotz.getInstance().hasNfcSupport(context);
 
   Check if NFC is enabled on this device:
 
-        Spotz.getInstance().isNfcEnabled(context);
+    Spotz.getInstance().isNfcEnabled(context);
 
   Check if Location service is supported on this device:
 
-        Spotz.getInstance().hasLocationSupport(context);
+    Spotz.getInstance().hasLocationSupport(context);
 
   Check if Location service is enabled on this device:
 
-        Spotz.getInstance().isLocationEnabled(context);
+    Spotz.getInstance().isLocationEnabled(context);
 
   Get a registered device id:
 
-        Spotz.getInstance().getDeviceId(context);
+    Spotz.getInstance().getDeviceId(context);
 
   Get Project details:
 
-        Spotz.getInstance().getProject(context);
+    Spotz.getInstance().getProject(context);
 
   Get current/active Site details:
 
-        Spotz.getInstance().getCurrentSite(context);
+    Spotz.getInstance().getCurrentSite(context);
 
   Get a list of all Project Sites:
 
-        Spotz.getInstance().getAvailableSites(context);
+    Spotz.getInstance().getAvailableSites(context);
 
   Get a list of Site Spots (if a Site is not an active Site this method may return an empty list):
 
-        Spotz.getInstance().getSiteSpots(context, siteId);
+    Spotz.getInstance().getSiteSpots(context, siteId);
 
   If set to 'true' - will output all debug logs, otherwise - not:
 
-        Spotz.getInstance().setDebug(debug);
+    Spotz.getInstance().setDebug(debug);
 
 ### Updating Device specific data
 
   Provide a user identity to be associated with a registered device:
 
-        Spotz.getInstance().setDeviceIdentity(context, userIdentity, responseListener);
+    Spotz.getInstance().setDeviceIdentity(context, userIdentity, responseListener);
 
   Delete a associated user identity from a registered device:
 
-        Spotz.getInstance().deleteDeviceIdentity(context, responseListener);
+    Spotz.getInstance().deleteDeviceIdentity(context, responseListener);
 
   Set device attributes:
 
-        Spotz.getInstance().setDeviceAttributes(context, attributes, responseListener);
+    Spotz.getInstance().setDeviceAttributes(context, attributes, responseListener);
 
   Set device extension data:
 
-        Spotz.getInstance().setDeviceExtensions(context, extensions, responseListener);
+    Spotz.getInstance().setDeviceExtensions(context, extensions, responseListener);
 
 ---
 
