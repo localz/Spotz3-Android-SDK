@@ -89,11 +89,11 @@ The sample app requires devices running Android 2.3.3 or newer. However, Bluetoo
 
   4. Insert your Spotz Application ID and Application Key into MainActivity.java - these can be found in the Spotz console under your application. Be sure to use the *android* client key:
 
-        ...
+        ```
         Spotz.getInstance().initialize(this,
                 "your-application-id", // Your application ID goes here
                 "your-client-key", // Your client key goes here
-        ...
+        ```
 
   5. Run it!
 
@@ -196,7 +196,7 @@ There are only 3 actions to implement - **initialize**, **scan**, and **listen**
 
 *Refer to the sample app code for a working implementation of the SDK.*
 
-###Initialize the SDK
+### Initialize the SDK
 
   1. Ensure your AndroidManifest.xml has these permissions:
 
@@ -362,7 +362,7 @@ Your project is now ready to start using the Spotz SDK!
 
 ---
 
-###Scanning for Spots
+### Scanning for Spots
 
   The SDK was built to use two application modes: *foreground* and *background*, and three scanning modes: *eager*, *normal* and *passive*. A combination of an application mode and a scanning mode defines how quickly the SDK responds to beacons and geofences.
   Scanning timings and power mode for each mode can be configured using Spotz API (console).
@@ -396,7 +396,7 @@ Your project is now ready to start using the Spotz SDK!
 
   To conserve battery, always stop scanning when not required.
 
-###Public utility methods:
+### Public utility methods:
 
   Check if the SDK is initialized:
 
@@ -454,7 +454,7 @@ Your project is now ready to start using the Spotz SDK!
 
         Spotz.getInstance().setDebug(debug);
 
-###Updating Device specific data
+### Updating Device specific data
 
   Provide a user identity to be associated with a registered device:
 
