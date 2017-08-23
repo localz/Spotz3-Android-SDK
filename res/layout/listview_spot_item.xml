@@ -19,7 +19,7 @@
         android:textAlignment="viewStart"
         tools:text="Spot Name: Spot XYZ"
         android:gravity="start"
-        localz:font="roboto_thin" />
+        localz:customFont="roboto_thin" />
 
     <com.localz.spotz.sdk.app.widgets.CustomFontTextView
         android:id="@+id/trigger"
@@ -30,6 +30,6 @@
         android:textAlignment="viewStart"
         android:textStyle="bold"
         android:gravity="start"
-        localz:font="roboto_thin" />
+        localz:customFont="roboto_thin" />
 
 </LinearLayout>

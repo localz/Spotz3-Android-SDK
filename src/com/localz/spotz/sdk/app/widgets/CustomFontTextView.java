@@ -27,7 +27,7 @@ public class CustomFontTextView extends TextView {
 
     private void init(Context context, AttributeSet attrs, int defStyle) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomFont, defStyle, 0);
-        String font = a.getString(R.styleable.CustomFont_font);
+        String font = a.getString(R.styleable.CustomFont_customFont);
         if (TextUtils.isEmpty(font)) {
             setTypeface(CustomFont.roboto_regular.getTypeface(context));
         }

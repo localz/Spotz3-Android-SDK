@@ -11,7 +11,7 @@
         android:layout_centerInParent="true"
         android:textSize="28sp"
         android:textColor="#f1c40f"
-        localz:font="roboto_thin"/>
+        localz:customFont="roboto_thin"/>
 
     <RelativeLayout
         android:id="@+id/spotz_data"
@@ -56,7 +56,7 @@
                 android:layout_weight="2"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                localz:font="roboto_thin"
+                localz:customFont="roboto_thin"
                 android:textColor="@android:color/white"/>
 
             <com.localz.spotz.sdk.app.widgets.CustomFontTextView
@@ -65,7 +65,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                localz:font="roboto_thin"
+                localz:customFont="roboto_thin"
                 android:textColor="@android:color/white"/>
         </LinearLayout>
 
@@ -123,7 +123,7 @@
                 android:layout_weight="4"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                localz:font="roboto_thin"
+                localz:customFont="roboto_thin"
                 android:textColor="@android:color/white"/>
 
             <com.localz.spotz.sdk.app.widgets.CustomFontTextView
@@ -132,7 +132,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                localz:font="roboto_thin"
+                localz:customFont="roboto_thin"
                 android:textColor="@android:color/white"/>
 
             <com.localz.spotz.sdk.app.widgets.CustomFontTextView
@@ -141,7 +141,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                localz:font="roboto_thin"
+                localz:customFont="roboto_thin"
                 android:textColor="@android:color/white"/>
 
         </LinearLayout>
@@ -191,7 +191,7 @@
                 android:layout_weight="2"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                localz:font="roboto_thin"
+                localz:customFont="roboto_thin"
                 android:textColor="@android:color/white"/>
 
             <com.localz.spotz.sdk.app.widgets.CustomFontTextView
@@ -200,7 +200,7 @@
                 android:layout_weight="2"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
-                localz:font="roboto_thin"
+                localz:customFont="roboto_thin"
                 android:textColor="@android:color/white"/>
 
         </LinearLayout>
@@ -227,7 +227,7 @@
             android:id="@+id/value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            localz:font="roboto_thin"
+            localz:customFont="roboto_thin"
             android:textSize="14sp"
             android:textColor="@android:color/white"/>
 
