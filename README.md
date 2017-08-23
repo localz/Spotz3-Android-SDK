@@ -71,23 +71,21 @@ The sample app requires devices running Android 2.3.3 or newer. However, Bluetoo
 
   1. Clone the repository:
   
-        git clone git@github.com:localz/Spotz3-Android-SDK.git
+    git clone git@github.com:localz/Spotz3-Android-SDK.git
 
   2. Import the project:
     
-    If you're using **Android Studio**, simply 'Open' the project.
+      If you're using **Android Studio**, simply 'Open' the project.
 
-    If you're using **Eclipse ADT**, in your workspace do File -> Import -> General -> Existing Projects into Workspace first for google-play-services-lib library project and then for the main project.
+      If you're using **Eclipse ADT**, in your workspace do File -> Import -> General -> Existing Projects into Workspace first for google-play-services-lib library project and then for the main project.
     
-    *The project targets Android 6.0 (API level 23) so check you have this version in your Android SDK.*
+      *The project targets Android 8.0 (API level 26) so check you have this version in your Android SDK.*
     
   3. Define a spot using the [Spotz console](https://console.localz.io). If using Bluetooth Low Energy, don't forget to add a beacon to your Spot. If you don't have a real beacon, you can use our Beacon Toolkit app to emulate an iBeacon:
   
-    <a href="https://itunes.apple.com/us/app/beacon-toolkit/id838735159?ls=1&mt=8">
-    <img alt="Beacon Toolkit on App Store" width="100" height="33"
-         src="http://localz.wpengine.com/wp-content/uploads/2014/03/app-store-300x102.jpg" />
-    </a>    
-    As Android L supports BLE peripheral mode, an Android version of our Beacon Toolkit will be released soon. 
+      <a href="https://itunes.apple.com/us/app/beacon-toolkit/id838735159?ls=1&mt=8">![Beacon Toolkit on App Store](http://localz.wpengine.com/wp-content/uploads/2014/03/app-store-300x102.jpg)</a>
+
+      As Android L supports BLE peripheral mode, an Android version of our Beacon Toolkit will be released soon. 
 
   4. Insert your Spotz Application ID and Application Key into MainActivity.java - these can be found in the Spotz console under your application. Be sure to use the *android* client key:
 
@@ -135,6 +133,8 @@ If you're a **Gradle** user you can easily include the library by specifying it 
         compile 'io.reactivex:rxjava-async-util:0.21.0'
         ...
     }
+
+Note: *jar* dependencies for SDK are no longer supported.
 
 If you're a **Maven** user you can include the library in your pom.xml:
 
@@ -200,17 +200,18 @@ There are only 3 actions to implement - **initialize**, **scan**, and **listen**
 
   1. Ensure your AndroidManifest.xml has these permissions:
 
-        <uses-permission android:name="android.permission.INTERNET" />
-        <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-        <uses-permission android:name="android.permission.WAKE_LOCK"/>
-        <uses-permission android:name="android.permission.BLUETOOTH"/>
-        <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-        <uses-permission android:name="android.permission.NFC" />
-        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-        <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
+
 Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if you want to restart monitoring after a phone reboot.
 
   2. If you turned off the manifest merger from the Gradle build tools, then define the following services in your AndroidManifest.xml:
