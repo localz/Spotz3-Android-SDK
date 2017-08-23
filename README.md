@@ -22,6 +22,10 @@ The Spotz3 Android SDK allows your Android app to detect when it is in range of 
 Changelog
 =========
 
+**1.4.0**
+* Upgraded SDK version to 3.4.0 - added support for Android 8 (Oreo). See changes in build [dependencies](#how-to-add-the-sdk-to-your-own-project) and [AndroidManifest.xml](#how-to-use-the-sdk).
+* Bug fixes.
+
 **1.3.0**
 * Bug fixes. Performance improvements.
 
@@ -114,19 +118,15 @@ If you're a **Gradle** user you can easily include the library by specifying it 
     dependencies {
         compile 'com.localz.spotz.sdk:spotz-api:0.3.0'
 
-        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.9@aar'
-        or
-        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.0.9@jar'
+        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.1.0@aar'
 
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.3.0@aar'
-        or
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.3.0@jar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.4.0@aar'
 
         // additional dependencies required by SDK
-        compile 'com.google.android.gms:play-services-location:8.3.0'
-        compile 'com.android.support:support-v4:23.2.1'
+        compile 'com.google.android.gms:play-services-location:11.2.0'
+        compile 'com.android.support:support-v4:26.0.0'
 
-        compile 'com.google.code.gson:gson:2.4'
+        compile 'com.google.code.gson:gson:2.7'
         compile 'com.google.http-client:google-http-client:1.20.0'
         compile 'com.google.http-client:google-http-client-gson:1.20.0'
 
@@ -142,8 +142,8 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-android</artifactId>
-      <version>3.3.0</version>
-      <type>aar</type> or <type>jar</type>
+      <version>3.4.0</version>
+      <type>aar</type>
     </dependency>
 
     <dependency>
@@ -155,8 +155,8 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.proximity.blesmart</groupId>
       <artifactId>ble-smart-sdk-android</artifactId>
-      <version>1.0.9</version>
-      <type>aar</type> or <type>jar</type>
+      <version>1.1.0</version>
+      <type>aar</type>
     </dependency>
 
     ...
@@ -173,14 +173,14 @@ If you're a **Maven** user you can include the library in your pom.xml:
 
 You will also need to add dependencies to google play services and support library. Google play services and support library are not available via public maven repositories. You will need to create a package (apklib or aar), load to your local maven repository and then use it as a reference in your pom.xml. The following tool should help: [https://github.com/simpligility/maven-android-sdk-deployer/](https://github.com/simpligility/maven-android-sdk-deployer/).
 
-If rolling old school, you can manually copy all the JARs in your libs folder and add them to your project's dependencies. Your libs folder will have at least the following JARs:
+If rolling old school, you can manually copy all the AARs/JARs in your libs folder and add them to your project's dependencies. Your libs folder will have at least the following AARs/JARs:
 
 - spotz-api-0.3.0.jar
-- ble-smart-sdk-android-1.0.9.jar
-- spotz-sdk-android-3.3.0.jar
+- ble-smart-sdk-android-1.1.0.aar
+- spotz-sdk-android-3.4.0.aar
 - google-http-client-1.20.0.jar
 - google-http-client-gson-1.20.0.jar
-- gson-2.4.jar
+- gson-2.7.jar
 - rxjava-1.0.10.jar
 - rxandroid-0.24.0.jar
 - rxjava-async-util-0.21.0.jar
@@ -213,16 +213,43 @@ There are only 3 actions to implement - **initialize**, **scan**, and **listen**
         <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
 Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if you want to restart monitoring after a phone reboot.
 
-  2. Define the following services in your AndroidManifest.xml:
+  2. If you turned off the manifest merger from the Gradle build tools, then define the following services in your AndroidManifest.xml:
 
-        <service android:name="com.localz.proximity.ble.services.BleHeartbeat" />
-        <service android:name="com.localz.spotz.sdk.geofence.GeofenceTransitionsIntentService"/>
-        <service android:name="com.localz.spotz.sdk.geofence.LocationUpdateHeartbeat"/>
-        <service android:name="com.localz.spotz.sdk.ActivityRecognitionIntentService"/>
+    <service android:name="com.localz.proximity.ble.services.BleHeartbeat" android:exported="false" />
+    <service android:name="com.localz.proximity.ble.services.BluetoothScanBackgroundJob" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="false"/>
+    <service android:name="com.localz.spotz.sdk.jobs.BackgroundJobService" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="false"/>
+        
+    Note: **ActivityRecognitionIntentService** and **GeofenceTransitionsIntentService** have been deprecated.
 
-  3. Define the following broadcast receivers in your AndroidManifest.xml:
+  3. If you turned off the manifest merger from the Gradle build tools, then define the following broadcast receivers in your AndroidManifest.xml:
 
-    3.1.These broadcast receivers are used internally in Spotz SDK. They must be registered in AndroidManifest file (**make sure you use your app's package name**):
+    3.1.These broadcast receivers are used internally in Spotz SDK. They must be registered in AndroidManifest file:
+        
+        <receiver
+            android:name="com.localz.spotz.sdk.geofence.GeofenceTransitionsBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.geofence.GeofenceTransitionsBroadcastReceiver.GEOFENCE_TRANSITION"/>
+            </intent-filter>
+        </receiver>
+        
+        <receiver
+            android:name="com.localz.spotz.sdk.ActivityRecognitionBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.ActivityRecognitionBroadcastReceiver.ACTIVITY_RECOGNITION"/>
+            </intent-filter>
+        </receiver>
+        
+        <receiver
+            android:name="com.localz.spotz.sdk.jobs.BackgroundJobBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.localz.spotz.sdk.jobs.BackgroundJobBroadcastReceiver.BACKGROUND_JOB"/>
+            </intent-filter>
+        </receiver>
+        
+    3.2.These broadcast receivers are used internally in Spotz SDK. They must be registered in AndroidManifest file (**make sure you use your app's package name**):
 
         <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFoundReceiver" android:exported="false">
             <intent-filter>
@@ -254,7 +281,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
             </intent-filter>
         </receiver>
 
-    3.2.These broadcast receivers must be implemented in the application.
+    3.3.These broadcast receivers must be implemented in the application.
         They will be invoked if a device enters or exits a spot.
         Example implementation can be found in this sample application. A typical implementation will create a notification.
 
@@ -290,7 +317,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
             </intent-filter>
         </receiver>
 
-    3.3.This receiver is only required if you integrated your Spotz Application with a 3rd party system. The receiver will be invoked when a reply is received from a 3rd party system. See section "Integration with 3rd party systems" below:
+    3.4.This receiver is only required if you integrated your Spotz Application with a 3rd party system. The receiver will be invoked when a reply is received from a 3rd party system. See section "Integration with 3rd party systems" below:
 
         <receiver android:name=".receivers.OnIntegrationRespondedBroadcastReceiver" android:exported="false">
             <intent-filter>
@@ -298,7 +325,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
             </intent-filter>
         </receiver>
 
-    3.4.This receiver will be invoked when a phone is rebooted. Register this receiver only if you are required to restart monitoring after reboot.
+    3.5.This receiver will be invoked when a phone is rebooted. Register this receiver only if you are required to restart monitoring after reboot.
 
         <receiver android:name="com.localz.spotz.sdk.OnRebootReceiver" android:exported="false">
             <intent-filter>
