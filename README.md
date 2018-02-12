@@ -22,6 +22,10 @@ The Spotz3 Android SDK allows your Android app to detect when it is in range of 
 Changelog
 =========
 
+**1.5.0**
+* Upgraded SDK version to 3.5.0 - removed RxJava dependencies.
+* Bug fixes.
+
 **1.4.0**
 * Upgraded SDK version to 3.4.0 - added support for Android 8 (Oreo). See changes in build [dependencies](#how-to-add-the-sdk-to-your-own-project) and [AndroidManifest.xml](#how-to-use-the-sdk).
 * Bug fixes.
@@ -116,21 +120,18 @@ If you're a **Gradle** user you can easily include the library by specifying it 
     dependencies {
         compile 'com.localz.spotz.sdk:spotz-api:0.3.0'
 
-        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.1.0@aar'
+        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.1.1@aar'
 
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.4.0@aar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.5.0@aar'
 
         // additional dependencies required by SDK
         compile 'com.google.android.gms:play-services-location:11.2.0'
         compile 'com.android.support:support-v4:26.0.0'
 
-        compile 'com.google.code.gson:gson:2.7'
-        compile 'com.google.http-client:google-http-client:1.20.0'
-        compile 'com.google.http-client:google-http-client-gson:1.20.0'
+        compile 'com.google.code.gson:gson:2.8.2'
+        compile 'com.google.http-client:google-http-client:1.23.0'
+        compile 'com.google.http-client:google-http-client-gson:1.23.0'
 
-        compile 'io.reactivex:rxjava:1.0.10'
-        compile 'io.reactivex:rxandroid:0.24.0'
-        compile 'io.reactivex:rxjava-async-util:0.21.0'
         ...
     }
 
@@ -142,7 +143,7 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-android</artifactId>
-      <version>3.4.0</version>
+      <version>3.5.0</version>
       <type>aar</type>
     </dependency>
 
@@ -155,7 +156,7 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.proximity.blesmart</groupId>
       <artifactId>ble-smart-sdk-android</artifactId>
-      <version>1.1.0</version>
+      <version>1.1.1</version>
       <type>aar</type>
     </dependency>
 
@@ -176,14 +177,11 @@ You will also need to add dependencies to google play services and support libra
 If rolling old school, you can manually copy all the AARs/JARs in your libs folder and add them to your project's dependencies. Your libs folder will have at least the following AARs/JARs:
 
 - spotz-api-0.3.0.jar
-- ble-smart-sdk-android-1.1.0.aar
-- spotz-sdk-android-3.4.0.aar
-- google-http-client-1.20.0.jar
-- google-http-client-gson-1.20.0.jar
-- gson-2.7.jar
-- rxjava-1.0.10.jar
-- rxandroid-0.24.0.jar
-- rxjava-async-util-0.21.0.jar
+- ble-smart-sdk-android-1.1.1.aar
+- spotz-sdk-android-3.5.0.aar
+- google-http-client-1.23.0.jar
+- google-http-client-gson-1.23.0.jar
+- gson-2.8.2.jar
 
 and also add "google play services lib" library project to your project. For instructions refer to [http://developer.android.com/google/play-services/setup.html](http://developer.android.com/google/play-services/setup.html). Select "Using Eclipse with ADT".
 
