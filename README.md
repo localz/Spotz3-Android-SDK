@@ -22,6 +22,9 @@ The Spotz3 Android SDK allows your Android app to detect when it is in range of 
 Changelog
 =========
 
+**1.5.1**
+* Upgraded SDK version to 3.5.1 - bug fixes.
+
 **1.5.0**
 * Upgraded SDK version to 3.5.0 - removed RxJava dependencies.
 * Bug fixes.
@@ -122,7 +125,7 @@ If you're a **Gradle** user you can easily include the library by specifying it 
 
         compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.1.1@aar'
 
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.5.0@aar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.5.1@aar'
 
         // additional dependencies required by SDK
         compile 'com.google.android.gms:play-services-location:11.2.0'
@@ -143,7 +146,7 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-android</artifactId>
-      <version>3.5.0</version>
+      <version>3.5.1</version>
       <type>aar</type>
     </dependency>
 
@@ -178,7 +181,7 @@ If rolling old school, you can manually copy all the AARs/JARs in your libs fold
 
 - spotz-api-0.3.0.jar
 - ble-smart-sdk-android-1.1.1.aar
-- spotz-sdk-android-3.5.0.aar
+- spotz-sdk-android-3.5.1.aar
 - google-http-client-1.23.0.jar
 - google-http-client-gson-1.23.0.jar
 - gson-2.8.2.jar
