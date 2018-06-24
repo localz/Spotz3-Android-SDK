@@ -22,6 +22,9 @@ The Spotz3 Android SDK allows your Android app to detect when it is in range of 
 Changelog
 =========
 
+**1.5.2**
+* Upgraded SDK version to 3.5.3 - bug fixes.
+
 **1.5.1**
 * Upgraded SDK version to 3.5.1 - bug fixes.
 
@@ -86,7 +89,7 @@ The sample app requires devices running Android 2.3.3 or newer. However, Bluetoo
 
       If you're using **Eclipse ADT**, in your workspace do File -> Import -> General -> Existing Projects into Workspace first for google-play-services-lib library project and then for the main project.
     
-      *The project targets Android 8.0 (API level 26) so check you have this version in your Android SDK.*
+      *The project targets Android 8.0 (API level 27) so check you have this version in your Android SDK.*
     
   3. Define a spot using the [Spotz console](https://console.localz.io). If using Bluetooth Low Energy, don't forget to add a beacon to your Spot. If you don't have a real beacon, you can use our Beacon Toolkit app to emulate an iBeacon:
   
@@ -125,11 +128,11 @@ If you're a **Gradle** user you can easily include the library by specifying it 
 
         compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.1.1@aar'
 
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.5.1@aar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.5.3@aar'
 
         // additional dependencies required by SDK
         compile 'com.google.android.gms:play-services-location:11.2.0'
-        compile 'com.android.support:support-v4:26.0.0'
+        compile 'com.android.support:support-v4:27.0.0'
 
         compile 'com.google.code.gson:gson:2.8.2'
         compile 'com.google.http-client:google-http-client:1.23.0'
@@ -146,7 +149,7 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-android</artifactId>
-      <version>3.5.1</version>
+      <version>3.5.3</version>
       <type>aar</type>
     </dependency>
 
@@ -181,7 +184,7 @@ If rolling old school, you can manually copy all the AARs/JARs in your libs fold
 
 - spotz-api-0.3.0.jar
 - ble-smart-sdk-android-1.1.1.aar
-- spotz-sdk-android-3.5.1.aar
+- spotz-sdk-android-3.5.3.aar
 - google-http-client-1.23.0.jar
 - google-http-client-gson-1.23.0.jar
 - gson-2.8.2.jar
