@@ -22,6 +22,9 @@ The Spotz3 Android SDK allows your Android app to detect when it is in range of 
 Changelog
 =========
 
+**1.6.0**
+* Upgraded SDK version to 3.6.3 - fixed background execution on Android 8.
+
 **1.5.2**
 * Upgraded SDK version to 3.5.3 - bug fixes.
 
@@ -128,13 +131,13 @@ If you're a **Gradle** user you can easily include the library by specifying it 
 
         compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.1.1@aar'
 
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.5.3@aar'
+        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.6.3@aar'
 
         // additional dependencies required by SDK
         compile 'com.google.android.gms:play-services-location:11.2.0'
         compile 'com.android.support:support-v4:27.0.0'
 
-        compile 'com.google.code.gson:gson:2.8.2'
+        compile 'com.google.code.gson:gson:2.8.5'
         compile 'com.google.http-client:google-http-client:1.23.0'
         compile 'com.google.http-client:google-http-client-gson:1.23.0'
 
@@ -149,7 +152,7 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-android</artifactId>
-      <version>3.5.3</version>
+      <version>3.6.3</version>
       <type>aar</type>
     </dependency>
 
@@ -184,10 +187,10 @@ If rolling old school, you can manually copy all the AARs/JARs in your libs fold
 
 - spotz-api-0.3.0.jar
 - ble-smart-sdk-android-1.1.1.aar
-- spotz-sdk-android-3.5.3.aar
+- spotz-sdk-android-3.6.3.aar
 - google-http-client-1.23.0.jar
 - google-http-client-gson-1.23.0.jar
-- gson-2.8.2.jar
+- gson-2.8.5.jar
 
 and also add "google play services lib" library project to your project. For instructions refer to [http://developer.android.com/google/play-services/setup.html](http://developer.android.com/google/play-services/setup.html). Select "Using Eclipse with ADT".
 
@@ -223,9 +226,15 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
     <service android:name="com.localz.proximity.ble.services.BleHeartbeat" android:exported="false" />
     <service android:name="com.localz.proximity.ble.services.BluetoothScanBackgroundJob" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="false"/>
     <service android:name="com.localz.spotz.sdk.jobs.BackgroundJobService" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="false"/>
+    <!-- IntentService for Android OS level geofences  (API < 26) -->
+    <service android:name="com.localz.spotz.sdk.geofence.GeofenceTransitionsIntentService" android:exported="false" />
+    <!-- IntentService for activity recognition (API < 26) -->
+    <service android:name="com.localz.spotz.sdk.ActivityRecognitionIntentService" android:exported="false" />
+    <!-- IntentService for background jobs via AlarmManager (API < 26) -->
+    <service android:name="com.localz.spotz.sdk.jobs.BackgroundJobIntentService" android:exported="false" />
+    <service android:name="com.localz.spotz.sdk.OnBeaconDiscoveryIntentService" android:exported="false" />
+    <service android:name="com.localz.spotz.sdk.OnGeofenceDiscoveryIntentService" android:exported="false" />
         
-  Note: **ActivityRecognitionIntentService** and **GeofenceTransitionsIntentService** have been deprecated. New services: **BluetoothScanBackgroundJob** and **BackgroundJobService**.
-
   3. If you turned off the manifest merger from the Gradle build tools, then define the following broadcast receivers in your AndroidManifest.xml:
 
       3.1.These broadcast receivers are used internally in Spotz SDK. They must be registered in AndroidManifest file:
@@ -246,6 +255,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
               </intent-filter>
           </receiver>
         
+          <!-- BroadcastReceiver for background jobs via AlarmManager (API < 26) -->
           <receiver
               android:name="com.localz.spotz.sdk.jobs.BackgroundJobBroadcastReceiver"
               android:exported="false">
@@ -349,6 +359,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
           Spotz.getInstance().initialize(context, // Your Android app context
                 "your-application-id",          // Your application ID goes here
                 "your-application-key",         // Your application key goes here
+                Spotz.Environment.DEV,          // API environment: DEV or PROD
                 new InitializationListenerAdapter() {
                     @Override
                     public void onInitialized() {

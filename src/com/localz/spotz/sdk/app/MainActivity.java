@@ -143,6 +143,7 @@ public class MainActivity extends Activity {
             Spotz.getInstance().initialize(getApplicationContext(),
                     "your_application_id", // Your application ID goes here
                     "your_client_key", // Your client key goes here
+                    Spotz.Environment.DEV,
                     new InitializationListenerAdapter() {
                         @Override
                         public void onInitialized() {
