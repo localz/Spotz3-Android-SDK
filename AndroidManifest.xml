@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.localz.spotz.sdk.app"
-    android:versionCode="9"
-    android:versionName="1.5.1" >
+    android:versionCode="10"
+    android:versionName="2.0.0" >
 
     <!-- Full set of permissions required by Spotz SDK -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -75,21 +75,6 @@
             </intent-filter>
         </receiver>
 
-        <!-- BroadcastReceiver for background jobs via AlarmManager (API < 26) -->
-        <receiver
-            android:name="com.localz.spotz.sdk.jobs.BackgroundJobBroadcastReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.localz.spotz.sdk.jobs.BackgroundJobBroadcastReceiver.BACKGROUND_JOB"/>
-            </intent-filter>
-        </receiver>
-
-        <!-- JobService for background jobs via JobScheduler (API >= 26) -->
-        <service
-            android:name="com.localz.spotz.sdk.jobs.BackgroundJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="false"/>
-
         <!-- These broadcast receivers are used internally in Spotz SDK. They must be registered in AndroidManifest file -->
 
         <receiver android:name="com.localz.spotz.sdk.OnDeviceStateChangeReceiver" android:exported="false" >
@@ -109,24 +94,6 @@
         <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFinishedReceiver" android:exported="false" >
             <intent-filter>
                 <action android:name="com.localz.spotz.sdk.app.LOCALZ_BLE_SCAN_FINISH" />
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name="com.localz.spotz.sdk.OnNfcFoundReceiver" android:exported="false" >
-            <intent-filter>
-                <action android:name="com.localz.spotz.sdk.app.LOCALZ_NFC_ENTER" />
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name="com.localz.spotz.sdk.OnGeofenceEnterBroadcastReceiver" android:exported="false" >
-            <intent-filter>
-                <action android:name="com.localz.spotz.sdk.app.LOCALZ_GEOFENCE_TRANSITION_ENTER" />
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name="com.localz.spotz.sdk.OnGeofenceExitBroadcastReceiver" android:exported="false" >
-            <intent-filter>
-                <action android:name="com.localz.spotz.sdk.app.LOCALZ_GEOFENCE_TRANSITION_EXIT" />
             </intent-filter>
         </receiver>
 

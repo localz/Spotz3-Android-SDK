@@ -22,6 +22,14 @@ The Spotz3 Android SDK allows your Android app to detect when it is in range of 
 Changelog
 =========
 
+**2.0.0**
+* Upgraded Spotz SDK version to 4.0.0: 
+    - fixed background execution on Android 8
+    - upgraded Play Services version to 16.0.0
+    - added Android Work Manager to handle background jobs
+    - added OkHttp client for API calls
+    - added Kotlin support
+
 **1.6.0**
 * Upgraded SDK version to 3.6.3 - fixed background execution on Android 8.
 
@@ -92,7 +100,7 @@ The sample app requires devices running Android 2.3.3 or newer. However, Bluetoo
 
       If you're using **Eclipse ADT**, in your workspace do File -> Import -> General -> Existing Projects into Workspace first for google-play-services-lib library project and then for the main project.
     
-      *The project targets Android 8.0 (API level 27) so check you have this version in your Android SDK.*
+      *The project targets Android 9.0 (API level 28) so check you have this version in your Android SDK.*
     
   3. Define a spot using the [Spotz console](https://console.localz.io). If using Bluetooth Low Energy, don't forget to add a beacon to your Spot. If you don't have a real beacon, you can use our Beacon Toolkit app to emulate an iBeacon:
   
@@ -114,33 +122,27 @@ The sample app requires devices running Android 2.3.3 or newer. However, Bluetoo
 How to add the SDK to your own Project
 ======================================
 
-Your project must support minimum Android 2.3.3 API level 10.	
+Your project must support minimum Android 4.1.x API level 16.	
 Ensure that using ["Android SDK Manager"](http://developer.android.com/tools/help/sdk-manager.html) you downloaded "Google Play Services" Rev.22 or later. 
 
 If you're a **Gradle** user you can easily include the library by specifying it as a dependency in your build.gradle script:
 
     allprojects {
         repositories {
-            maven { url "http://localz.github.io/mvn-repo" }
+            maven { url 'http://localz.github.io/mvn-repo' }
+            maven { url 'https://jitpack.io' }
             ...
         }
     }
     ...
     dependencies {
-        compile 'com.localz.spotz.sdk:spotz-api:0.3.0'
-
-        compile 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.1.1@aar'
-
-        compile 'com.localz.spotz.sdk:spotz-sdk-android:3.6.3@aar'
-
-        // additional dependencies required by SDK
-        compile 'com.google.android.gms:play-services-location:11.2.0'
-        compile 'com.android.support:support-v4:27.0.0'
-
-        compile 'com.google.code.gson:gson:2.8.5'
-        compile 'com.google.http-client:google-http-client:1.23.0'
-        compile 'com.google.http-client:google-http-client-gson:1.23.0'
-
+        implementation 'com.android.support:support-annotations:28.0.0'
+        implementation 'com.google.android.gms:play-services-location:16.0.0'
+    
+        implementation 'com.localz.localz-sdk-android:base-core:1.7.0'
+        implementation 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.2.0@aar'
+        implementation 'com.localz.spotz.sdk:spotz-sdk-android:4.0.0@aar'
+    
         ...
     }
 
@@ -152,20 +154,21 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.spotz.sdk</groupId>
       <artifactId>spotz-sdk-android</artifactId>
-      <version>3.6.3</version>
+      <version>4.0.0</version>
       <type>aar</type>
-    </dependency>
-
-    <dependency>
-      <groupId>com.localz.spotz.sdk</groupId>
-      <artifactId>spotz-api</artifactId>
-      <version>0.3.0</version>
     </dependency>
 
     <dependency>
       <groupId>com.localz.proximity.blesmart</groupId>
       <artifactId>ble-smart-sdk-android</artifactId>
-      <version>1.1.1</version>
+      <version>1.2.0</version>
+      <type>aar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>com.localz.localz-sdk-android</groupId>
+      <artifactId>base-core</artifactId>
+      <version>1.7.0</version>
       <type>aar</type>
     </dependency>
 
@@ -177,6 +180,10 @@ If you're a **Maven** user you can include the library in your pom.xml:
             <id>Localz mvn repository</id>
             <url>http://localz.github.io/mvn-repo</url>
         </repository>
+        <repository>
+            <id>Jitpack</id>
+            <url>https://jitpack.io</url>
+        </repository>
         ...
     </repositories>
     ...
@@ -185,12 +192,9 @@ You will also need to add dependencies to google play services and support libra
 
 If rolling old school, you can manually copy all the AARs/JARs in your libs folder and add them to your project's dependencies. Your libs folder will have at least the following AARs/JARs:
 
-- spotz-api-0.3.0.jar
-- ble-smart-sdk-android-1.1.1.aar
-- spotz-sdk-android-3.6.3.aar
-- google-http-client-1.23.0.jar
-- google-http-client-gson-1.23.0.jar
-- gson-2.8.5.jar
+- ble-smart-sdk-android-1.2.0.aar
+- spotz-sdk-android-4.0.0.aar
+- base-core-1.7.0.aar
 
 and also add "google play services lib" library project to your project. For instructions refer to [http://developer.android.com/google/play-services/setup.html](http://developer.android.com/google/play-services/setup.html). Select "Using Eclipse with ADT".
 
@@ -225,15 +229,10 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
 
     <service android:name="com.localz.proximity.ble.services.BleHeartbeat" android:exported="false" />
     <service android:name="com.localz.proximity.ble.services.BluetoothScanBackgroundJob" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="false"/>
-    <service android:name="com.localz.spotz.sdk.jobs.BackgroundJobService" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="false"/>
     <!-- IntentService for Android OS level geofences  (API < 26) -->
     <service android:name="com.localz.spotz.sdk.geofence.GeofenceTransitionsIntentService" android:exported="false" />
     <!-- IntentService for activity recognition (API < 26) -->
     <service android:name="com.localz.spotz.sdk.ActivityRecognitionIntentService" android:exported="false" />
-    <!-- IntentService for background jobs via AlarmManager (API < 26) -->
-    <service android:name="com.localz.spotz.sdk.jobs.BackgroundJobIntentService" android:exported="false" />
-    <service android:name="com.localz.spotz.sdk.OnBeaconDiscoveryIntentService" android:exported="false" />
-    <service android:name="com.localz.spotz.sdk.OnGeofenceDiscoveryIntentService" android:exported="false" />
         
   3. If you turned off the manifest merger from the Gradle build tools, then define the following broadcast receivers in your AndroidManifest.xml:
 
@@ -255,15 +254,6 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
               </intent-filter>
           </receiver>
         
-          <!-- BroadcastReceiver for background jobs via AlarmManager (API < 26) -->
-          <receiver
-              android:name="com.localz.spotz.sdk.jobs.BackgroundJobBroadcastReceiver"
-              android:exported="false">
-              <intent-filter>
-                  <action android:name="com.localz.spotz.sdk.jobs.BackgroundJobBroadcastReceiver.BACKGROUND_JOB"/>
-              </intent-filter>
-          </receiver>
-        
       3.2.These broadcast receivers are used internally in Spotz SDK. They must be registered in AndroidManifest file (**make sure you use your app's package name**):
 
           <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFoundReceiver" android:exported="false">
@@ -275,24 +265,6 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
           <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFinishedReceiver" android:exported="false">
               <intent-filter>
                   <action android:name="${applicationId}.LOCALZ_BLE_SCAN_FINISH" />
-              </intent-filter>
-          </receiver>
-
-          <receiver android:name="com.localz.spotz.sdk.OnGeofenceEnterBroadcastReceiver" android:exported="false">
-              <intent-filter>
-                  <action android:name="${applicationId}.LOCALZ_GEOFENCE_TRANSITION_ENTER" />
-              </intent-filter>
-          </receiver>
-
-          <receiver android:name="com.localz.spotz.sdk.OnGeofenceExitBroadcastReceiver" android:exported="false">
-              <intent-filter>
-                  <action android:name="${applicationId}.LOCALZ_GEOFENCE_TRANSITION_EXIT" />
-              </intent-filter>
-          </receiver>
-
-          <receiver android:name="com.localz.spotz.sdk.OnNfcFoundReceiver" android:exported="false">
-              <intent-filter>
-                  <action android:name="${applicationId}.LOCALZ_NFC_ENTER" />
               </intent-filter>
           </receiver>
 
@@ -359,7 +331,7 @@ Note: `android.permission.RECEIVE_BOOT_COMPLETED` permission is only required if
           Spotz.getInstance().initialize(context, // Your Android app context
                 "your-application-id",          // Your application ID goes here
                 "your-application-key",         // Your application key goes here
-                Spotz.Environment.DEV,          // API environment: DEV or PROD
+                LocalzEnvironment.DEV,          // API environment: DEV or PROD
                 new InitializationListenerAdapter() {
                     @Override
                     public void onInitialized() {
@@ -473,19 +445,19 @@ Your project is now ready to start using the Spotz SDK!
 
   Provide a user identity to be associated with a registered device:
 
-    Spotz.getInstance().setDeviceIdentity(context, userIdentity, responseListener);
+    Spotz.getInstance().setDeviceIdentity(context, userIdentity, callback);
 
   Delete a associated user identity from a registered device:
 
-    Spotz.getInstance().deleteDeviceIdentity(context, responseListener);
+    Spotz.getInstance().deleteDeviceIdentity(context, callback);
 
   Set device attributes:
 
-    Spotz.getInstance().setDeviceAttributes(context, attributes, responseListener);
+    Spotz.getInstance().setDeviceAttributes(context, attributes, callback);
 
   Set device extension data:
 
-    Spotz.getInstance().setDeviceExtensions(context, extensions, responseListener);
+    Spotz.getInstance().setDeviceExtensions(context, extensions, callback);
 
 ---
 
@@ -616,11 +588,11 @@ In this case, SDK initialization will be similar to the following:
 
 Sometimes you might want to provide an Identity of a user that uses your application to the system that you integrate with. This is achieved by associating a user Identity with a Spotz Device via setDeviceIdentity(...) call in Spotz SDK. E.g.:
 
-	Spotz.getInstance().setDeviceIdentity(context, "#565589", responseListener);
+	Spotz.getInstance().setDeviceIdentity(context, "#565589", callback);
 
 The statement above will make Identity value "#565589" available to all 3rd party integration systems. To remove this user-device association (e.g. after user logout) - use deleteDeviceIdentity(...) SDK call:
 
-    Spotz.getInstance().deleteDeviceIdentity(context, responseListener);
+    Spotz.getInstance().deleteDeviceIdentity(context, callback);
 
 You can also define other attributes for a Device, not just the Identity, and they will also be available to all 3rd party integration systems:
 
@@ -629,16 +601,16 @@ You can also define other attributes for a Device, not just the Identity, and th
 
     Spotz.getInstance().setDeviceAttributes(context, attributes, listener);
 
-Should you wish to pass a value ONLY to one 3rd party system, use setDeviceExtensions(context, extensions, responseListener) SDK call:
+Should you wish to pass a value ONLY to one 3rd party system, use setDeviceExtensions(context, extensions, callback) SDK call:
 
-    DeviceRegisterPostRequest.Extension extension = new DeviceRegisterPostRequest.Extension();
+    DeviceRegisterRequest.Extension extension = new DeviceRegisterRequest.Extension();
 
     extension.name = "extensionName";
     extension.type = "extensionType";
     extension.attributes = new HashMap<>();
     extension.attributes.put("extensionSpecificAttribute", "#565589");
 
-    DeviceRegisterPostRequest.Extension[] extensions = new DeviceRegisterPostRequest.Extension[] {extension};
+    DeviceRegisterRequest.Extension[] extensions = new DeviceRegisterRequest.Extension[] {extension};
 
     Spotz.getInstance().setDeviceExtensions(context, extensions, listener);
 
@@ -685,4 +657,4 @@ For bugs, feature requests, or other questions, [file an issue](https://github.c
 License
 =======
 
-Copyright 2017 [Localz Pty Ltd](http://localz.co/)
+Copyright 2018 [Localz Pty Ltd](http://localz.co/)
