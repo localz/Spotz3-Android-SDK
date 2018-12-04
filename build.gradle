@@ -10,11 +10,15 @@ buildscript {
 }
 
 allprojects {
+    ext.kotlin_version = '1.3.10'
+
     repositories {
         mavenLocal()
-        maven { url "http://localz.github.io/mvn-repo" }
-        maven { url "https://maven.google.com" }
+        google()
+        jcenter()
         mavenCentral()
+        maven { url "http://localz.github.io/mvn-repo" }
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -25,7 +29,7 @@ android {
     buildToolsVersion '28.0.3'
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 28
     }
 
@@ -52,13 +56,10 @@ android {
 dependencies {
     implementation 'com.android.support:support-v4:28.0.0'
 
-    implementation 'com.localz.spotz.sdk:spotz-api:0.3.0'
-    implementation 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.1.1@aar'
-    implementation 'com.localz.spotz.sdk:spotz-sdk-android:3.6.3@aar'
+    implementation 'com.localz.localz-sdk-android:base-core:1.7.0'
 
-    implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.google.http-client:google-http-client:1.23.0'
-    implementation 'com.google.http-client:google-http-client-gson:1.23.0'
+    implementation 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.2.0@aar'
+    implementation 'com.localz.spotz.sdk:spotz-sdk-android:4.0.0@aar'
 
-    implementation 'com.google.android.gms:play-services-location:11.2.0'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
 }

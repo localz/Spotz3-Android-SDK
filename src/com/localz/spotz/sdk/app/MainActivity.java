@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.localz.sdk.core.util.LocalzEnvironment;
 import com.localz.spotz.sdk.Spotz;
 import com.localz.spotz.sdk.app.model.SpotzMap;
 import com.localz.spotz.sdk.app.widgets.CustomAnimation;
@@ -143,7 +144,7 @@ public class MainActivity extends Activity {
             Spotz.getInstance().initialize(getApplicationContext(),
                     "your_application_id", // Your application ID goes here
                     "your_client_key", // Your client key goes here
-                    Spotz.Environment.DEV,
+                    LocalzEnvironment.DEV,
                     new InitializationListenerAdapter() {
                         @Override
                         public void onInitialized() {
