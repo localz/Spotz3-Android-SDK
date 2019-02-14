@@ -30,7 +30,7 @@ public class SpotDataActivity extends Activity {
 
         Spot spot = (Spot) getIntent().getSerializableExtra(Spotz.EXTRA_SPOTZ);
 
-        ListView spotDataList = (ListView) findViewById(R.id.spot_data_list);
+        ListView spotDataList = findViewById(R.id.spot_data_list);
         spotDataList.setAdapter(new SpotDataAdapter(spot));
     }
 
@@ -46,9 +46,9 @@ public class SpotDataActivity extends Activity {
         private final Map<Integer, Integer> typeMap;
 
         public SpotDataAdapter(Spot spot) {
-            dataList = new ArrayList<Object>();
+            dataList = new ArrayList<>();
 
-            typeMap = new HashMap<Integer, Integer>();
+            typeMap = new HashMap<>();
             int i = 0;
             typeMap.put(i++, TYPE_HEADING);
             dataList.add("Spot info");
@@ -115,19 +115,19 @@ public class SpotDataActivity extends Activity {
                 view = getLayoutInflater().inflate(R.layout.listview_spot_data_item, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.spotzDataLayout = view.findViewById(R.id.spotz_data);
-                viewHolder.id = (TextView) view.findViewById(R.id.spotz_id);
-                viewHolder.name = (TextView) view.findViewById(R.id.spotz_name);
-                viewHolder.heading = (TextView) view.findViewById(R.id.heading);
+                viewHolder.id = view.findViewById(R.id.spotz_id);
+                viewHolder.name = view.findViewById(R.id.spotz_name);
+                viewHolder.heading = view.findViewById(R.id.heading);
                 viewHolder.beaconLayout = view.findViewById(R.id.beacon);
-                viewHolder.uuid = (TextView) view.findViewById(R.id.uuid);
-                viewHolder.major = (TextView) view.findViewById(R.id.major);
-                viewHolder.minor = (TextView) view.findViewById(R.id.minor);
+                viewHolder.uuid = view.findViewById(R.id.uuid);
+                viewHolder.major = view.findViewById(R.id.major);
+                viewHolder.minor = view.findViewById(R.id.minor);
                 viewHolder.geofenceLayout = view.findViewById(R.id.geofence);
-                viewHolder.geofenceId = (TextView) view.findViewById(R.id.geofence_id);
-                viewHolder.geofenceCoordinates = (TextView) view.findViewById(R.id.geofence_coordinates);
+                viewHolder.geofenceId = view.findViewById(R.id.geofence_id);
+                viewHolder.geofenceCoordinates = view.findViewById(R.id.geofence_coordinates);
                 viewHolder.payloadLayout = view.findViewById(R.id.payload);
-                viewHolder.key = (TextView) view.findViewById(R.id.key);
-                viewHolder.value = (TextView) view.findViewById(R.id.value);
+                viewHolder.key = view.findViewById(R.id.key);
+                viewHolder.value = view.findViewById(R.id.value);
                 view.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) view.getTag();

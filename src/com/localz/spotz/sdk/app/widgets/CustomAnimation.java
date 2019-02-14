@@ -37,12 +37,7 @@ public class CustomAnimation {
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    view.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            set.start();
-                        }
-                    }, 1000);
+                    view.postDelayed(() -> set.start(), 1000);
                 }
             });
             set.start();

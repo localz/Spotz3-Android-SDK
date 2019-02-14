@@ -79,49 +79,43 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         inSpotMap = new SpotzMap(this);
 
-        statusText = (TextView) findViewById(R.id.activity_status_text);
-        startStop = (Button) findViewById(R.id.start_stop);
+        statusText = findViewById(R.id.activity_status_text);
+        startStop = findViewById(R.id.start_stop);
 
-        ListView activeSpotsListView = (ListView) findViewById(R.id.spots_list_view);
+        ListView activeSpotsListView = findViewById(R.id.spots_list_view);
         spotListAdapter = new SpotListAdapter();
         activeSpotsListView.setAdapter(spotListAdapter);
 
         // displays spot details
-        activeSpotsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Spot spot = null;
-                if (position < spotListAdapter.getCount()) {
-                    spot = (Spot) spotListAdapter.getItem(position);
-                }
-                if (spot != null) {
-                    Intent intent = new Intent(MainActivity.this, SpotDataActivity.class);
-                    intent.putExtra(Spotz.EXTRA_SPOTZ, spot);
-                    startActivity(intent);
-                }
+        activeSpotsListView.setOnItemClickListener((parent, view, position, id) -> {
+            Spot spot = null;
+            if (position < spotListAdapter.getCount()) {
+                spot = (Spot) spotListAdapter.getItem(position);
+            }
+            if (spot != null) {
+                Intent intent = new Intent(MainActivity.this, SpotDataActivity.class);
+                intent.putExtra(Spotz.EXTRA_SPOTZ, spot);
+                startActivity(intent);
             }
         });
 
         // Show either "Start Scanning" or "Stop Scanning" depending on the status
 
-        startStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                if (Spotz.getInstance().isScanningForSpotz(getApplicationContext())) {
-                    stopScanning();
+        startStop.setOnClickListener(arg0 -> {
+            if (Spotz.getInstance().isScanningForSpotz(getApplicationContext())) {
+                stopScanning();
+                inSpotMap.clear();
+            } else {
+                if (!initialised) {
+                    startStop.setVisibility(View.INVISIBLE);
                     inSpotMap.clear();
+                    // Initialise Spotz
+                    initialiseSpotzSdk(true);
                 } else {
-                    if (!initialised) {
-                        startStop.setVisibility(View.INVISIBLE);
-                        inSpotMap.clear();
-                        // Initialise Spotz
-                        initialiseSpotzSdk(true);
-                    } else {
-                        startActiveScanning();
-                    }
+                    startActiveScanning();
                 }
-                adjustUI();
             }
+            adjustUI();
         });
         // output debug info, or not
         Spotz.getInstance().setDebug(getApplicationContext(), true);
@@ -162,12 +156,9 @@ public class MainActivity extends Activity {
                         public void onError(Throwable exception) {
                             Log.e(TAG, "Exception while registering device", exception);
 
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    startStop.setVisibility(View.VISIBLE);
-                                    createErrorDialogInitialising();
-                                }
+                            runOnUiThread(() -> {
+                                startStop.setVisibility(View.VISIBLE);
+                                createErrorDialogInitialising();
                             });
                         }
                     }, false);
@@ -308,30 +299,27 @@ public class MainActivity extends Activity {
         inSpotMap = new SpotzMap(this);
         spotList.clear();
 
-        MainActivity.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (!inSpotMap.isEmpty()) {
-                    spotList.addAll(inSpotMap.values());
-                    Collections.sort(spotList, spotComparator);
-                    statusText.setVisibility(View.VISIBLE);
+        MainActivity.this.runOnUiThread(() -> {
+            if (!inSpotMap.isEmpty()) {
+                spotList.addAll(inSpotMap.values());
+                Collections.sort(spotList, spotComparator);
+                statusText.setVisibility(View.VISIBLE);
+                statusText.setText("Scanning");
+                setInRange();
+            } else {
+                if (Spotz.getInstance().isScanningForSpotz(getApplicationContext())) {
                     statusText.setText("Scanning");
-                    setInRange();
+                    statusText.setVisibility(View.VISIBLE);
+                    setOutOfRange();
+                } else if (Spotz.getInstance().isInitialized(getApplicationContext())) {
+                    statusText.setText("Initialised");
+                    statusText.setVisibility(View.VISIBLE);
                 } else {
-                    if (Spotz.getInstance().isScanningForSpotz(getApplicationContext())) {
-                        statusText.setText("Scanning");
-                        statusText.setVisibility(View.VISIBLE);
-                        setOutOfRange();
-                    } else if (Spotz.getInstance().isInitialized(getApplicationContext())) {
-                        statusText.setText("Initialised");
-                        statusText.setVisibility(View.VISIBLE);
-                    } else {
-                        statusText.setText("Not initialised");
-                        statusText.setVisibility(View.VISIBLE);
-                    }
+                    statusText.setText("Not initialised");
+                    statusText.setVisibility(View.VISIBLE);
                 }
-                spotListAdapter.notifyDataSetChanged();
             }
+            spotListAdapter.notifyDataSetChanged();
         });
     }
 
@@ -356,13 +344,9 @@ public class MainActivity extends Activity {
                 .setTitle("Unable to initialize")
                 .setMessage(R.string.message_initialize_error)
                 .setPositiveButton("Close",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(
-                                    DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                                finish();
-                            }
+                        (dialogInterface, i) -> {
+                            dialogInterface.dismiss();
+                            finish();
                         }).show();
     }
 
@@ -417,20 +401,14 @@ public class MainActivity extends Activity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setMessage("Bluetooth not enabled, select 'OK' to enable Bluetooth, 'Cancel' to continue");
                 builder.setCancelable(false);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        closeAlertDialog();
-                        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-                    }
+                builder.setPositiveButton("OK", (dialog, which) -> {
+                    closeAlertDialog();
+                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        closeAlertDialog();
-                        initialiseSpotzSdk(false);
-                    }
+                builder.setNegativeButton("Cancel", (dialog, which) -> {
+                    closeAlertDialog();
+                    initialiseSpotzSdk(false);
                 });
                 alertDialog = builder.create();
                 alertDialog.show();
@@ -462,19 +440,13 @@ public class MainActivity extends Activity {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setMessage("Failed to initialise Bluetooth, select 'OK' to continue without Bluetooth, 'Cancel' to quit");
         builder.setCancelable(false);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                closeAlertDialog();
-                initialiseSpotzSdk(false);
-            }
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            closeAlertDialog();
+            initialiseSpotzSdk(false);
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                closeAlertDialog();
-                finish();
-            }
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            closeAlertDialog();
+            finish();
         });
         alertDialog = builder.create();
         alertDialog.show();
@@ -511,19 +483,13 @@ public class MainActivity extends Activity {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setMessage("Spotz SDK requires access to Location service. Is that OK?");
             builder.setCancelable(false);
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    closeAlertDialog();
-                    requestPermissions();
-                }
+            builder.setPositiveButton("Yes", (dialog, which) -> {
+                closeAlertDialog();
+                requestPermissions();
             });
-            builder.setNegativeButton("Nope", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    closeAlertDialog();
-                    finish();
-                }
+            builder.setNegativeButton("Nope", (dialog, which) -> {
+                closeAlertDialog();
+                finish();
             });
             alertDialog = builder.create();
             alertDialog.show();
@@ -575,20 +541,19 @@ public class MainActivity extends Activity {
                 view = getLayoutInflater().inflate(R.layout.listview_spot_item, viewGroup, false);
             }
             Spot spot = (Spot) getItem(i);
-            TextView spotName = (TextView) view.findViewById(R.id.spot_name);
-            TextView trigger = (TextView) view.findViewById(R.id.trigger);
+            TextView spotName = view.findViewById(R.id.spot_name);
+            TextView trigger = view.findViewById(R.id.trigger);
             spotName.setText("Spot name: " + spot.name);
             if (closestSpotId != null && spot.spotId.equals(closestSpotId)) {
                 spotName.setText("Spot name: " + spot.name + " (* closest)");
             }
             trigger.setVisibility(View.VISIBLE);
             if (spot.enteredBeacon != null) {
-                StringBuilder builder = new StringBuilder();
-                builder.append("Beacon").append("\nid: ").append(spot.enteredBeacon.beaconId);
-                builder.append("\nrssi: ").append(spot.enteredBeacon.rssi);
-                builder.append(" txPower: ").append(spot.enteredBeacon.txPower);
-                builder.append("\ndistance: ").append(spot.enteredBeacon.distance);
-                trigger.setText(builder.toString());
+                String builder = "Beacon" + "\nid: " + spot.enteredBeacon.beaconId +
+                        "\nrssi: " + spot.enteredBeacon.rssi +
+                        " txPower: " + spot.enteredBeacon.txPower +
+                        "\ndistance: " + spot.enteredBeacon.distance;
+                trigger.setText(builder);
             } else if (spot.enteredGeofence != null) {
                 trigger.setText("Geofence: " + spot.enteredGeofence.geofenceId);
             } else {

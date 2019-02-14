@@ -21,6 +21,12 @@ The Spotz3 Android SDK allows your Android app to detect when it is in range of 
 
 Changelog
 =========
+**2.1.0**
+* Upgrade to localz-sdk-android version of Spotz
+    - Cleanup build.gradle files
+    - Upgrade Gradle Wrapper
+    - Upgrade Localz SDK dependencies
+    
 
 **2.0.0**
 * Upgraded Spotz SDK version to 4.0.0: 
@@ -137,11 +143,7 @@ If you're a **Gradle** user you can easily include the library by specifying it 
     ...
     dependencies {
         implementation 'com.android.support:support-annotations:28.0.0'
-        implementation 'com.google.android.gms:play-services-location:16.0.0'
-    
-        implementation 'com.localz.localz-sdk-android:base-core:1.7.0'
-        implementation 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.2.0@aar'
-        implementation 'com.localz.spotz.sdk:spotz-sdk-android:4.0.0@aar'
+        implementation 'com.localz.localz-sdk-android:spotz-sdk:2.4.12'
     
         ...
     }
@@ -152,9 +154,9 @@ If you're a **Maven** user you can include the library in your pom.xml:
 
     ...
     <dependency>
-      <groupId>com.localz.spotz.sdk</groupId>
-      <artifactId>spotz-sdk-android</artifactId>
-      <version>4.0.0</version>
+      <groupId>com.localz.localz-sdk-android</groupId>
+      <artifactId>spotz-sdk</artifactId>
+      <version>2.4.12</version>
       <type>aar</type>
     </dependency>
 
@@ -168,7 +170,7 @@ If you're a **Maven** user you can include the library in your pom.xml:
     <dependency>
       <groupId>com.localz.localz-sdk-android</groupId>
       <artifactId>base-core</artifactId>
-      <version>1.7.0</version>
+      <version>2.4.12</version>
       <type>aar</type>
     </dependency>
 

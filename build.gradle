@@ -60,6 +60,4 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.21"
 
     implementation 'com.localz.localz-sdk-android:spotz-sdk:2.4.12'
-
-    implementation 'com.google.android.gms:play-services-location:16.0.0'
 }

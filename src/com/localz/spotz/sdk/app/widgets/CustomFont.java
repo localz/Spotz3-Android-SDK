@@ -10,7 +10,7 @@ public enum CustomFont {
     private final String path;
     private Typeface typeface;
 
-    private CustomFont(String path) {
+    CustomFont(String path) {
         this.path = path;
     }
 
