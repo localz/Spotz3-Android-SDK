@@ -1,28 +1,25 @@
 buildscript {
     repositories {
-        maven { url 'https://maven.google.com' }
+        google()
         jcenter()
-        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.3.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.21"
     }
 }
 
 allprojects {
-    ext.kotlin_version = '1.3.10'
-
     repositories {
-        mavenLocal()
         google()
         jcenter()
-        mavenCentral()
         maven { url "http://localz.github.io/mvn-repo" }
         maven { url 'https://jitpack.io' }
     }
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
@@ -51,15 +48,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation 'com.android.support:support-v4:28.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.21"
 
-    implementation 'com.localz.localz-sdk-android:base-core:1.7.0'
-
-    implementation 'com.localz.proximity.blesmart:ble-smart-sdk-android:1.2.0@aar'
-    implementation 'com.localz.spotz.sdk:spotz-sdk-android:4.0.0@aar'
+    implementation 'com.localz.localz-sdk-android:spotz-sdk:2.4.12'
 
     implementation 'com.google.android.gms:play-services-location:16.0.0'
 }
