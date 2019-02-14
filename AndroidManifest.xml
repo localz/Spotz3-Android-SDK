@@ -45,45 +45,7 @@
             android:name=".SpotDataActivity"
             android:screenOrientation="portrait" />
 
-        <!-- These services must be defined in your app to enable background scanning -->
-        <!-- BLE scan job using AlarmManager (API < 26) -->
-        <service
-            android:name="com.localz.proximity.ble.services.BleHeartbeat"
-            android:exported="false"/>
-
-        <!-- BLE scan job using JobScheduler (API >= 26) -->
-        <service
-            android:name="com.localz.proximity.ble.services.BluetoothScanBackgroundJob"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="false"/>
-
-        <!-- BroadcastReceiver for Android OS level geofences -->
-        <receiver
-            android:name="com.localz.spotz.sdk.geofence.GeofenceTransitionsBroadcastReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.localz.spotz.sdk.geofence.GeofenceTransitionsBroadcastReceiver.GEOFENCE_TRANSITION"/>
-            </intent-filter>
-        </receiver>
-
-        <!-- BroadcastReceiver for activity recognition -->
-        <receiver
-            android:name="com.localz.spotz.sdk.ActivityRecognitionBroadcastReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.localz.spotz.sdk.ActivityRecognitionBroadcastReceiver.ACTIVITY_RECOGNITION"/>
-            </intent-filter>
-        </receiver>
-
         <!-- These broadcast receivers are used internally in Spotz SDK. They must be registered in AndroidManifest file -->
-
-        <receiver android:name="com.localz.spotz.sdk.OnDeviceStateChangeReceiver" android:exported="false" >
-            <intent-filter>
-                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
-                <action android:name="android.location.MODE_CHANGED" />
-                <action android:name="android.location.PROVIDERS_CHANGED" />
-            </intent-filter>
-        </receiver>
 
         <receiver android:name="com.localz.spotz.sdk.OnBeaconDiscoveryFoundReceiver" android:exported="false" >
             <intent-filter>
